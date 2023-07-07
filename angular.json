@@ -6,7 +6,7 @@
     "ngx-xapi": {
       "projectType": "library",
       "root": "projects/ngx-xapi",
-      "sourceRoot": "projects/ngx-xapi/src",
+      "sourceRoot": "projects/ngx-xapi",
       "prefix": "lib",
       "architect": {
         "build": {
