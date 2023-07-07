@@ -1,0 +1,6 @@
+{
+  "dest": "../../../dist/ngx-xapi/model",
+  "lib": {
+    "entryFile": "src/public-api.ts"
+  }
+}
