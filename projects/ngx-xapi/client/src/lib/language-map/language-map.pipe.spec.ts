@@ -1,4 +1,4 @@
-import { LanguageMap } from 'ngx-xapi/model';
+import { LanguageMap } from '@berry-cloud/ngx-xapi/model';
 import { LanguageMapPipe } from './language-map.pipe';
 
 describe('LanguageMapPipe', () => {
