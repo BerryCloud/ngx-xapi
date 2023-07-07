@@ -7,7 +7,12 @@ import {
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { About, Activity, Statement, StatementResult } from 'ngx-xapi/model';
+import {
+  About,
+  Activity,
+  Statement,
+  StatementResult,
+} from '@berry-cloud/ngx-xapi/model';
 import { AgentProfileParams } from './agent-profile-params';
 import { StateParams } from './state-params';
 import { StatementFormat, StatementsParams } from './statements-params';

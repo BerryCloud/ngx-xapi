@@ -1,4 +1,4 @@
-import { Verb } from 'ngx-xapi/model';
+import { Verb } from '@berry-cloud/ngx-xapi/model';
 
 export class Verbs {
   static readonly launched: Verb = {

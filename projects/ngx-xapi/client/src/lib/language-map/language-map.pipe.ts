@@ -1,5 +1,5 @@
 import { Inject, LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
-import { LanguageMap } from 'ngx-xapi/model';
+import { LanguageMap } from '@berry-cloud/ngx-xapi/model';
 import { formatLanguageMap } from './format-language-map';
 
 @Pipe({

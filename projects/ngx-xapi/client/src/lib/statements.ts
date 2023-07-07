@@ -1,6 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Verbs } from './verbs';
-import { Activity, Agent, Context, Statement, Verb } from 'ngx-xapi/model';
+import {
+  Activity,
+  Agent,
+  Context,
+  Statement,
+  Verb,
+} from '@berry-cloud/ngx-xapi/model';
 
 export class Statements {
   /**

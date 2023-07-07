@@ -12,13 +12,13 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "paths": {
-      "ngx-xapi/model": [
+      "@berry-cloud/ngx-xapi/model": [
         "dist/ngx-xapi/model"
       ],
-      "ngx-xapi/client": [
+      "@berry-cloud/ngx-xapi/client": [
         "dist/ngx-xapi/client"
       ],
-      "ngx-xapi": [
+      "@berry-cloud/ngx-xapi": [
         "dist/ngx-xapi"
       ]
     },

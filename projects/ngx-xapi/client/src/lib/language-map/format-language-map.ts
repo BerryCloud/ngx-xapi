@@ -1,4 +1,4 @@
-import { LanguageMap } from 'ngx-xapi/model';
+import { LanguageMap } from '@berry-cloud/ngx-xapi/model';
 
 export function formatLanguageMap(
   languageMap: LanguageMap,
