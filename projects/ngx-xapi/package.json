@@ -1,6 +1,27 @@
 {
   "name": "@berry-cloud/ngx-xapi",
+  "private": false,
   "version": "0.0.1",
+  "description": "Angular library for xAPI",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BerryCloud/ngx-xapi.git"
+  },
+  "keywords": [
+    "Angular",
+    "xAPI",
+    "Tin Can"
+  ],
+  "author": "Berry Cloud",
+  "bugs": {
+    "url": "https://github.com/BerryCloud/ngx-xapi/issues"
+  },
+  "homepage": "https://github.com/BerryCloud/ngx-xapi#readme",
+  "scripts": {
+    "preversion": "ng build && ng test --no-watch --no-progress --browsers=ChromeHeadless",
+    "version": "git add . && git commit -m \"Version $npm_package_version\" && git tag v$npm_package_version",
+    "postversion": "git push && git push --tags"
+  },
   "peerDependencies": {
     "@angular/common": "^16.1.0",
     "@angular/core": "^16.1.0",
