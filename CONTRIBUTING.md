@@ -19,7 +19,7 @@ Note: x should be replaced with either major, minor or patch. The npm version co
 
 ### Creating a GitHub Release
 
-Next, create a [GitHub release](https://github.com/BerryCloud/ngx-unsplash/releases) for the newly created version tag.
+Next, create a [GitHub release](https://github.com/BerryCloud/ngx-xapi/releases) for the newly created version tag.
 
 Once the GitHub release has been created, GitHub actions will publish the new version.
 
