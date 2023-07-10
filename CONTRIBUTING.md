@@ -1,24 +1,24 @@
-Publishing a new version
+## Publishing a new version
 
-Creating a release branch
+### Creating a release branch
 
 git checkout -b release-x.x.x
 git push --set-upstream origin release-x.x.x
 Note: x.x.x should be the next version not the current version.
 
-Setting the version
+### Setting the version
 
 cd projects/ngx-xapi
 npm version x
 Note: x should be replaced with either major, minor or patch. The npm version command will create and push a tag for the version.
 
-Creating a GitHub Release
+### Creating a GitHub Release
 
 Next, create a GitHub release for the newly created version tag.
 
 Once the GitHub release has been created, GitHub actions will publish the new version.
 
-Merging the release branch into main
+### Merging the release branch into main
 
 A pull request should then be created for the release branch to merge the changes back into main.
 
