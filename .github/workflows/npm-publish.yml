@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: 18
       - run: npm ci
+      - run: npx ng build
       - run: npx ng test --no-watch --no-progress --browsers=ChromeHeadless
 
   publish-npm:
