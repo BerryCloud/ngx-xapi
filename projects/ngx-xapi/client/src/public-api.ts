@@ -4,6 +4,7 @@
 
 export * from './lib/language-map/language-map.module';
 export * from './lib/language-map/language-map.pipe';
+export * from './lib/language-map/format-language-map';
 export * from './lib/agent-profile-params';
 export * from './lib/lrs-client';
 export * from './lib/state-params';
