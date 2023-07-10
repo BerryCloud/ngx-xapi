@@ -2,7 +2,7 @@
   "name": "@berry-cloud/ngx-xapi",
   "private": false,
   "version": "0.0.1",
-  "description": "xAPI model, client and tools",
+  "description": "Angular library for xAPI",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BerryCloud/ngx-xapi.git"
