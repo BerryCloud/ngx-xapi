@@ -146,8 +146,6 @@ export interface Statement {
    */
   timestamp?: string; // Timestamp
 
-}
-
   /**
    * Timestamp of when this Statement was recorded.
    */
