@@ -1,5 +1,6 @@
 import { LanguageMap } from './language-map';
 
+<<<<<<< HEAD
 /**
  * This interface represents the xAPI Attachment object.
  *
@@ -46,6 +47,18 @@ export interface Attachment {
 /**
  * Predefined Attachment Usage Types.
  */
+=======
+export interface Attachment {
+  usageType: AttachmentUsageType | string;
+  display: LanguageMap;
+  contentType: string;
+  length: number;
+  sha2: string;
+  description?: LanguageMap;
+  fileUrl?: string;
+}
+
+>>>>>>> refs/remotes/origin/main
 export enum AttachmentUsageType {
   SIGNATURE = 'http://adlnet.gov/expapi/attachments/signature',
 }
