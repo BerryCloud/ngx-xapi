@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * This interface represents the xAPI Account object.
  *
@@ -15,9 +14,5 @@ export interface Account {
   /**
    * The unique id or name used to log in to this account.
    */
-=======
-export interface Account {
-  homePage?: string;
->>>>>>> refs/remotes/origin/main
   name?: string;
 }

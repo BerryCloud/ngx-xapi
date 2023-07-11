@@ -1,6 +1,5 @@
 import { Account } from './account';
 
-<<<<<<< HEAD
 /**
  * This interface represents the xAPI Person object.
  *
@@ -33,14 +32,5 @@ export interface Person {
   /**
    * List of accounts.
    */
-=======
-export interface Person {
-  objectType: 'Person';
-  name?: string[];
-
-  mbox?: string[];
-  mbox_sha1sum?: string[];
-  openid?: string[];
->>>>>>> refs/remotes/origin/main
   account?: Account[];
 }

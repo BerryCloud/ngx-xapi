@@ -5,7 +5,6 @@ import { Extensions } from './extensions';
 import { Result } from './result';
 import { Verb } from './verb';
 
-<<<<<<< HEAD
 /**
  * This interface represents the xAPI Statement Reference object.
  *
@@ -111,32 +110,6 @@ export interface Context {
  *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#statement-properties">xAPI
  *      Statement</a>
  */
-=======
-export interface StatementReference {
-  objectType: 'StatementRef';
-  id: string; // UUID
-}
-
-export interface ContextActivities {
-  parent?: Activity[];
-  grouping?: Activity[];
-  category?: Activity[];
-  other?: Activity[];
-}
-
-export interface Context {
-  registration?: string; // UUID
-  instructor?: Actor;
-  team?: Group;
-  contextActivities?: ContextActivities;
-  revision?: string;
-  platform?: string;
-  language?: string;
-  statement?: StatementReference;
-  extensions?: Extensions;
-}
-
->>>>>>> refs/remotes/origin/main
 export interface Statement {
   /**
    * UUID assigned by LRS if not set by the Learning Record Provider.
@@ -152,7 +125,6 @@ export interface Statement {
    * Action taken by the Actor.
    */
   verb: Verb;
-<<<<<<< HEAD
 
   /**
    * Activity, Actor, or another Statement that is the Object of the Statement.
@@ -162,9 +134,6 @@ export interface Statement {
   /**
    * Result Object, further details representing a measured outcome.
    */
-=======
-  object: Activity | StatementReference | Actor | SubStatement;
->>>>>>> refs/remotes/origin/main
   result?: Result;
 
   /**
@@ -176,12 +145,7 @@ export interface Statement {
    * Timestamp of when the events described within this Statement occurred.
    */
   timestamp?: string; // Timestamp
-  stored?: string; // Timestamp
-  authority?: Actor;
-  attachments?: Attachment[];
-}
 
-<<<<<<< HEAD
   /**
    * Timestamp of when this Statement was recorded.
    */
@@ -209,8 +173,6 @@ export interface Statement {
  * @see <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#substatements">xAPI
  *      SubStatement</a>
  */
-=======
->>>>>>> refs/remotes/origin/main
 export interface SubStatement extends Statement {
   objectType: 'SubStatement';
   object: Activity | StatementReference | Actor;
