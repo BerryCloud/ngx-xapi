@@ -10,4 +10,3 @@ export * from './lib/lrs-client';
 export * from './lib/state-params';
 export * from './lib/statements-params';
 export * from './lib/statements';
-export * from './lib/verbs';
