@@ -1,45 +1,52 @@
+import { XOR } from 'ts-xor';
 import { Account } from './account';
 
-interface ActorType {
+type ActorType = {
   objectType?: string;
   name?: string;
+};
 
-  mbox?: string;
-  mbox_sha1sum?: string;
-  openid?: string;
-  account?: Account;
-}
+type IdentifiedActor = XOR<
+  {
+    mbox: string;
+  },
+  XOR<
+    {
+      mbox_sha1sum: string;
+    },
+    XOR<
+      {
+        openid: string;
+      },
+      {
+        account: Account;
+      }
+    >
+  >
+>;
 
 /**
  * An Agent (an individual) is a persona or system.
  */
-export interface Agent extends ActorType {
-  objectType?: 'Agent';
-}
+export type Agent = ActorType & IdentifiedActor & { objectType?: 'Agent' };
 
 /**
  * An Anonymous Group is used to describe a cluster of people where there is
  * no ready identifier for this cluster, e.g. an ad hoc team.
  */
-export interface AnonymousGroup extends ActorType {
+export type AnonymousGroup = ActorType & {
   objectType: 'Group';
-  name?: string;
   member: Agent[];
-
-  mbox: undefined;
-  mbox_sha1sum: undefined;
-  openid: undefined;
-  account: undefined;
-}
+};
 
 /**
  * An Identified Group is used to uniquely identify a cluster of Agents.
  */
-export interface IdentifiedGroup extends ActorType {
-  objectType: 'Group';
-  name?: string;
-  member?: Agent[];
-}
+export type IdentifiedGroup = ActorType &
+  IdentifiedActor & {
+    objectType: 'Group';
+    member?: Agent[];
+  };
 
 /**
  * A Group represents a collection of Agents and can be used in most of the
