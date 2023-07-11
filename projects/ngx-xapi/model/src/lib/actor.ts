@@ -1,4 +1,3 @@
-import { XOR } from 'ts-xor';
 import { Account } from './account';
 
 type ActorType = {
