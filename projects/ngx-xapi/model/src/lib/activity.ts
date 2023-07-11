@@ -1,17 +1,25 @@
 import { Extensions } from './extensions';
 import { LanguageMap } from './language-map';
 
-interface ActivityDefinitionType {
+interface ActivityDefinition {
   name?: LanguageMap;
   description?: LanguageMap;
   type?: string; // Should be IRI
   moreInfo?: string; // Should be IRI
   extensions?: Extensions;
+
+  interactionType?: string;
+  correctResponsesPattern?: string[];
+
+  choices?: InteractionComponent[];
+  scale?: InteractionComponent[];
+  source?: InteractionComponent[];
+  target?: InteractionComponent[];
+  steps?: InteractionComponent[];
 }
 
-interface InteractionActivityDefinitionType extends ActivityDefinitionType {
+interface InteractionActivityDefinitionType extends ActivityDefinition {
   type: 'http://adlnet.gov/expapi/activities/cmi.interaction';
-  correctResponsesPattern?: string[];
 }
 
 export interface InteractionComponent {
@@ -28,7 +36,7 @@ export interface TrueFalseInteractionActivityDefinition
 export interface ChoiceInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
   interactionType: 'choice';
-  choices?: InteractionComponent[];
+  choices: InteractionComponent[];
 }
 
 export interface FillInInteractionActivityDefinition
@@ -44,26 +52,26 @@ export interface LongFillInInteractionActivityDefinition
 export interface LikertInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
   interactionType: 'likert';
-  scale?: InteractionComponent[];
+  scale: InteractionComponent[];
 }
 
 export interface MatchingInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
   interactionType: 'matching';
-  source?: InteractionComponent[];
-  target?: InteractionComponent[];
+  source: InteractionComponent[];
+  target: InteractionComponent[];
 }
 
 export interface PerformanceInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
   interactionType: 'performance';
-  steps?: InteractionComponent[];
+  steps: InteractionComponent[];
 }
 
 export interface SequencingInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
   interactionType: 'sequencing';
-  choices?: InteractionComponent[];
+  choices: InteractionComponent[];
 }
 
 export interface NumericInteractionActivityDefinition
@@ -76,21 +84,8 @@ export interface OtherInteractionActivityDefinition
   interactionType: 'other';
 }
 
-export type ActivityDefinition =
-  | ActivityDefinitionType
-  | TrueFalseInteractionActivityDefinition
-  | ChoiceInteractionActivityDefinition
-  | FillInInteractionActivityDefinition
-  | LongFillInInteractionActivityDefinition
-  | LikertInteractionActivityDefinition
-  | MatchingInteractionActivityDefinition
-  | PerformanceInteractionActivityDefinition
-  | SequencingInteractionActivityDefinition
-  | NumericInteractionActivityDefinition
-  | OtherInteractionActivityDefinition;
-
 export interface Activity {
-  objectType: 'Activity';
+  objectType?: 'Activity';
   id: string; // Should be IRI
   definition?: ActivityDefinition;
 }

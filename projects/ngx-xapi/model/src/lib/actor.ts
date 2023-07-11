@@ -1,6 +1,6 @@
 import { Account } from './account';
 
-interface IdentifiedActor {
+interface ActorType {
   objectType?: string;
   name?: string;
 
@@ -13,24 +13,29 @@ interface IdentifiedActor {
 /**
  * An Agent (an individual) is a persona or system.
  */
-export interface Agent extends IdentifiedActor {
-  objectType: 'Agent';
+export interface Agent extends ActorType {
+  objectType?: 'Agent';
 }
 
 /**
  * An Anonymous Group is used to describe a cluster of people where there is
  * no ready identifier for this cluster, e.g. an ad hoc team.
  */
-export interface AnonymousGroup {
+export interface AnonymousGroup extends ActorType {
   objectType: 'Group';
   name?: string;
   member: Agent[];
+
+  mbox: undefined;
+  mbox_sha1sum: undefined;
+  openid: undefined;
+  account: undefined;
 }
 
 /**
  * An Identified Group is used to uniquely identify a cluster of Agents.
  */
-export interface IdentifiedGroup extends IdentifiedActor {
+export interface IdentifiedGroup extends ActorType {
   objectType: 'Group';
   name?: string;
   member?: Agent[];

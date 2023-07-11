@@ -43,5 +43,6 @@ export interface Statement {
 }
 
 export interface SubStatement extends Statement {
+  objectType: 'SubStatement';
   object: Activity | StatementReference | Actor;
 }
