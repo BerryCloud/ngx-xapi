@@ -6,24 +6,31 @@ type ActorType = {
   name?: string;
 };
 
-type IdentifiedActor = XOR<
-  {
-    mbox: string;
-  },
-  XOR<
-    {
+type IdentifiedActor =
+  | {
+      mbox: string;
+      mbox_sha1sum?: undefined;
+      openid?: undefined;
+      account?: undefined;
+    }
+  | {
+      mbox?: undefined;
       mbox_sha1sum: string;
-    },
-    XOR<
-      {
-        openid: string;
-      },
-      {
-        account: Account;
-      }
-    >
-  >
->;
+      openid?: undefined;
+      account?: undefined;
+    }
+  | {
+      mbox?: undefined;
+      mbox_sha1sum?: undefined;
+      openid: string;
+      account?: undefined;
+    }
+  | {
+      mbox?: undefined;
+      mbox_sha1sum?: undefined;
+      openid?: undefined;
+      account: Account;
+    };
 
 /**
  * An Agent (an individual) is a persona or system.
