@@ -7,7 +7,7 @@ type ActorType = {
 
 type IdentifiedActor =
   | {
-      mbox: string;
+      mbox: `mailto:${string}`;
       mbox_sha1sum?: undefined;
       openid?: undefined;
       account?: undefined;

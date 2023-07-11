@@ -1,3 +1,4 @@
+import { Agent } from './actor';
 import { Activity } from './activity';
 import { Actor, Group } from './actor';
 import { Attachment } from './attachment';
@@ -24,7 +25,7 @@ export interface Context {
   contextActivities?: ContextActivities;
   revision?: string;
   platform?: string;
-  language?: string;
+  language?: Exclude<string, 'und' | 'Und' | 'UND'>;
   statement?: StatementReference;
   extensions?: Extensions;
 }
@@ -33,7 +34,12 @@ export interface Statement {
   id?: string; // UUID
   actor: Actor;
   verb: Verb;
-  object: Activity | StatementReference | Actor | SubStatement;
+  object:
+    | Activity
+    | StatementReference
+    | SubStatement
+    | Group
+    | (Agent & { objectType: 'Agent' });
   result?: Result;
   context?: Context;
   timestamp?: string; // Timestamp
@@ -44,5 +50,9 @@ export interface Statement {
 
 export interface SubStatement extends Statement {
   objectType: 'SubStatement';
-  object: Activity | StatementReference | Actor;
+  object:
+    | Activity
+    | StatementReference
+    | Group
+    | (Agent & { objectType: 'Agent' });
 }
