@@ -14,5 +14,5 @@ export interface Account {
   /**
    * The unique id or name used to log in to this account.
    */
-  name?: string;
+  name: string;
 }
