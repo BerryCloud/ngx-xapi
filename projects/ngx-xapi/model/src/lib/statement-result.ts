@@ -3,9 +3,7 @@ import { Statement } from './statement';
 /**
  * This interface represents the xAPI Statement Result object.
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#25-retrieval-of-statements">xAPI
- *      Statement Result</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#25-retrieval-of-statements | xAPI Statement Result}
  */
 export interface StatementResult {
   /**

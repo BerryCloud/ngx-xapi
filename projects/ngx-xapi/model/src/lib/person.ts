@@ -3,9 +3,7 @@ import { Account } from './account';
 /**
  * This interface represents the xAPI Person object.
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Communication.md#person-properties">xAPI
- *      Person</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Communication.md#person-properties | xAPI Person}
  */
 export interface Person {
   objectType: 'Person';

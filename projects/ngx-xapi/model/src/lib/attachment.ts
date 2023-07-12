@@ -3,8 +3,7 @@ import { LanguageMap } from './language-map';
 /**
  * This interface represents the xAPI Attachment object.
  *
- * @see <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#attachments">xAPI
- *      Attachment</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#attachments | xAPI Attachment}
  */
 export interface Attachment {
   /**

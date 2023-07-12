@@ -3,23 +3,18 @@ import { LanguageMap } from './language-map';
 
 /**
  * This interface represents the xAPI Activity Definition object.
- * <p>
+ *
+ * @remarks
  * Upon receiving a Statement with an Activity Definition that differs from the one stored, an LRS
  * SHOULD ... change the definition and SHOULD update the stored Activity Definition.
- * </p>
- * <p>
+ *
  * When two ActivityDefinitions are merged, the properties and lists are replaced and the maps are
  * merged.
- * </p>
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#activity-definition">xAPI
- *      Activity Definition</a>
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#lrs-requirements-1">LRS
- *      Requirements</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#activity-definition | xAPI Activity Definition}
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#lrs-requirements-1 | LRS Requirements}
  */
-interface ActivityDefinition {
+export interface ActivityDefinition {
   /**
    * The human readable/visual name of the Activity.
    */
@@ -90,9 +85,7 @@ interface InteractionActivityDefinitionType extends ActivityDefinition {
 /**
  * This interface represents the xAPI Interaction Component object.
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-components">xAPI
- *      Interaction Components</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-components | xAPI Interaction Components}
  */
 export interface InteractionComponent {
   /**
@@ -108,13 +101,11 @@ export interface InteractionComponent {
 
 /**
  * This interface represents the xAPI Activity Definition object for a True/False interaction.
- * <p>
- * An interaction with two possible responses: true or false.
- * </p>
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types">
- *      Interaction Types</a>
+ * @remarks
+ * An interaction with two possible responses: true or false.
+ *
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types | Interaction Types}
  */
 export interface TrueFalseInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
@@ -124,14 +115,13 @@ export interface TrueFalseInteractionActivityDefinition
 
 /**
  * This interface represents the xAPI Activity Definition object for a Multiple Choice interaction.
- * <p>
+ *
+ * @remarks
  * An interaction with a number of possible choices from which the learner can select.
  * This includes interactions in which the learner can select only one answer from the list and
  * those where the learner can select multiple items.
- * </p>
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types">
- *      Interaction Types</a>
+ *
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types | Interaction Types}
  */
 export interface ChoiceInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
@@ -141,16 +131,14 @@ export interface ChoiceInteractionActivityDefinition
 
 /**
  * This interface represents the xAPI Activity Definition object for a Fill-in interaction.
- * <p>
+ *
+ * @remarks
  * An interaction which requires the learner to supply a short response in the form of one or
  *  more strings of characters. Typically, the correct response consists of part of a word,
  *  one word or a few words. "Short" means that the correct responses pattern and learner
  *  response strings will normally be 250 characters or less.
- * </p>
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types">
- *      Interaction Types</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types | Interaction Types}
  */
 export interface FillInInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
@@ -159,15 +147,13 @@ export interface FillInInteractionActivityDefinition
 
 /**
  * This interface represents the xAPI Activity Definition object for a Long Fill-in interaction.
- * <p>
+ *
+ * @remarks
  * An interaction which requires the learner to supply a response in the form of a long
  * string of characters. "Long" means that the correct responses pattern and learner response
  * strings will normally be more than 250 characters.
- * </p>
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types">
- *      Interaction Types</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types | Interaction Types}
  */
 export interface LongFillInInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
@@ -176,15 +162,13 @@ export interface LongFillInInteractionActivityDefinition
 
 /**
  * This interface represents the xAPI Activity Definition object for a Matching interaction.
- * <p>
+ *
+ * @remarks
  * An interaction where the learner is asked to match items in one set (the source set) to
  * items in another set (the target set). Items do not have to pair off exactly and it is
  *  possible for multiple or zero source items to be matched to a given target and vice versa.
- * </p>
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types">
- *      Interaction Types</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types | Interaction Types}
  */
 export interface MatchingInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
@@ -195,13 +179,11 @@ export interface MatchingInteractionActivityDefinition
 
 /**
  * This interface represents the xAPI Activity Definition object for a Performance interaction.
- * <p>
- * An interaction that requires the learner to perform a task that requires multiple steps.
- * </p>
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types">
- *      Interaction Types</a>
+ * @remarks
+ * An interaction that requires the learner to perform a task that requires multiple steps.
+ *
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types | Interaction Types}
  */
 export interface PerformanceInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
@@ -211,13 +193,11 @@ export interface PerformanceInteractionActivityDefinition
 
 /**
  * This interface represents the xAPI Activity Definition object for a Sequencing interaction.
- * <p>
- * An interaction where the learner is asked to order items in a set.
- * </p>
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types">
- *      Interaction Types</a>
+ * @remarks
+ * An interaction where the learner is asked to order items in a set.
+ *
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types | Interaction Types}
  */
 export interface SequencingInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
@@ -227,13 +207,11 @@ export interface SequencingInteractionActivityDefinition
 
 /**
  * This interface represents the xAPI Activity Definition object for a Likert interaction.
- * <p>
- * An interaction which asks the learner to select from a discrete set of choices on a scale/
- * </p>
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types">
- *      Interaction Types</a>
+ * @remarks
+ * An interaction which asks the learner to select from a discrete set of choices on a scale/
+ *
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types | Interaction Types}
  */
 export interface LikertInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
@@ -243,13 +221,11 @@ export interface LikertInteractionActivityDefinition
 
 /**
  * This interface represents the xAPI Activity Definition object for a Numeric interaction.
- * <p>
- * Any interaction which requires a numeric response from the learner.
- * </p>
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types">
- *      Interaction Types</a>
+ * @remarks
+ * Any interaction which requires a numeric response from the learner.
+ *
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types | Interaction Types}
  */
 export interface NumericInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
@@ -258,13 +234,11 @@ export interface NumericInteractionActivityDefinition
 
 /**
  * This interface represents the xAPI Activity Definition object for a Other interaction.
- * <p>
- * Another type of interaction that does not fit into other defined types.
- * </p>
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types">
- *      Interaction Types</a>
+ * @remarks
+ * Another type of interaction that does not fit into other defined types.
+ *
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types | Interaction Types}
  */
 export interface OtherInteractionActivityDefinition
   extends InteractionActivityDefinitionType {
@@ -274,9 +248,7 @@ export interface OtherInteractionActivityDefinition
 /**
  * This class represents the xAPI Activity object.
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#2441-when-the-objecttype-is-activity">xAPI
- *      Activity</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#interaction-types | Interaction Types}
  */
 export interface Activity {
   objectType?: 'Activity';

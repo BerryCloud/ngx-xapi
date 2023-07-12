@@ -8,9 +8,7 @@ import { Verb } from './verb';
 /**
  * This interface represents the xAPI Statement Reference object.
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#statement-references">xAPI
- *      Statement Reference</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#statement-references | xAPI Statement Reference}
  */
 export interface StatementReference {
   /**
@@ -27,9 +25,7 @@ export interface StatementReference {
 /**
  * This interface represents the xAPI Context Activities object.
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#2462-contextactivities-property">xAPI
- *      Context Activities</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#2462-contextactivities-property | xAPI Context Activities}
  */
 export interface ContextActivities {
   /**
@@ -56,8 +52,7 @@ export interface ContextActivities {
 /**
  * This interface represents the xAPI Context object.
  *
- * @see <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#context">xAPI
- *      Context</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#context | xAPI Context}
  */
 export interface Context {
   /**
@@ -106,9 +101,7 @@ export interface Context {
 /**
  * This interface represents the xAPI Statement object.
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#statement-properties">xAPI
- *      Statement</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#statement-properties | xAPI Statement}
  */
 export interface Statement {
   /**
@@ -170,8 +163,7 @@ export interface Statement {
 /**
  * This interface represents the xAPI SubStatement object.
  *
- * @see <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#substatements">xAPI
- *      SubStatement</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#substatements | xAPI SubStatement}
  */
 export interface SubStatement extends Statement {
   objectType: 'SubStatement';

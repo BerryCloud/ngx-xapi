@@ -1,9 +1,7 @@
 /**
  * This interface represents the xAPI Account object.
  *
- * @see <a href=
- *      "https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#2424-account-object">xAPI
- *      Account</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#2424-account-object | xAPI Account }
  */
 export interface Account {
   /**

@@ -50,7 +50,7 @@ type IdentifiedActor =
 /**
  * This type represents the xAPI Agent object.
  *
- * @see <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#agent">xAPI Agent</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#agent | xAPI Agent}
  */
 export type Agent = ActorType &
   IdentifiedActor & {
@@ -62,19 +62,19 @@ export type Agent = ActorType &
 
 /**
  * Sub-type for the Anonymous Group.
- * <p>
+ *
+ * @remarks
  * An Anonymous Group is used to describe a cluster of people where there is
  * no ready identifier for this cluster, e.g. an ad hoc team.
- * </p>
  *
- * @see <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#requirements-for-anonymous-groups">
- * Requirements for Anonymous Groups</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#requirements-for-anonymous-groups | Requirements for Anonymous Groups}
  */
 export type AnonymousGroup = ActorType & {
   /**
    * Mandatory property for Groups.
    */
   objectType: 'Group';
+
   /**
    * The members of this Group. This is an unordered list.
    */
@@ -83,12 +83,11 @@ export type AnonymousGroup = ActorType & {
 
 /**
  * Sub-type for the Identified Group.
- * <p>
- * An Identified Group is used to uniquely identify a cluster of Agents.
- * </p>
  *
- * @see <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#requirements-for-identified-groups">
- * Requirements for Identified  Groups</a>
+ * @remarks
+ * An Identified Group is used to uniquely identify a cluster of Agents.
+ *
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#requirements-for-identified-groups | Requirements for Identified Groups}
  */
 export type IdentifiedGroup = ActorType &
   IdentifiedActor & {
@@ -104,20 +103,20 @@ export type IdentifiedGroup = ActorType &
 
 /**
  * This type represents the xAPI Group object.
- * <p>
- * A Group is used to identify a set of Agents. A Group can be anonymous or identified.
- * </p>
  *
- * @see <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#group">xAPI Group</a>
+ * @remarks
+ * A Group is used to identify a set of Agents. A Group can be anonymous or identified.
+ *
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#group | xAPI Group}
  */
 export type Group = AnonymousGroup | IdentifiedGroup;
 
 /**
  * This class represents the xAPI Actor object.
- * <p>
- * An Actor is used to identify the Agent or Group that performed the action.
- * </p>
  *
- * @see <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#actor">xAPI Actor</a>
+ * @remarks
+ * An Actor is used to identify the Agent or Group that performed the action.
+ *
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#actor | xAPI Actor}
  */
 export type Actor = Agent | Group;

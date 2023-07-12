@@ -3,8 +3,7 @@ import { Extensions } from './extensions';
 /**
  * This interface represents the xAPI Score object.
  *
- * @see <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#2451-score">xAPI
- *      Score</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#2451-score | xAPI Score}
  */
 export interface Score {
   /**
@@ -33,8 +32,7 @@ export interface Score {
 /**
  * This interface represents the xAPI Result object.
  *
- * @see <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#result">xAPI
- *      Result</a>
+ * @see {@link https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md#result | xAPI Result}
  */
 export interface Result {
   /**
