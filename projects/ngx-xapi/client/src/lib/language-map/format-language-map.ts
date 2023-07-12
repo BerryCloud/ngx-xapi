@@ -1,5 +1,18 @@
 import { LanguageMap } from '@berry-cloud/ngx-xapi/model';
 
+/**
+ * Calculates the most appropriate language map value for the given locale.
+ *
+ * The algorithm is as follows:
+ * 1. If the locale is found in the language map, return the value.
+ * 2. If the locale has a subtag, remove the subtag and try again.
+ * 3. If the UND locale is found in the language map, return the value.
+ * 4. Return the first value in the language map or an empty string.
+ *
+ * @param languageMap a language map
+ * @param locale the preferred locale
+ * @returns the most appropriate language map value
+ */
 export function formatLanguageMap(
   languageMap: LanguageMap,
   locale: string

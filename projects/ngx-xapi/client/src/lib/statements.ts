@@ -1,11 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Verbs } from './verbs';
 import {
   Activity,
   Agent,
   Context,
   Statement,
   Verb,
+  completed,
+  initialized,
+  progressed,
+  registered,
+  terminated,
 } from '@berry-cloud/ngx-xapi/model';
 
 export class Statements {
@@ -27,7 +31,7 @@ export class Statements {
     return {
       id: uuidv4().toString(), // Registration might not be unique
       actor: agent,
-      verb: Verbs.registered,
+      verb: registered,
       object: activity,
       timestamp: timestamp?.toISOString() || new Date().toISOString(),
       context: { registration },
@@ -52,7 +56,7 @@ export class Statements {
   ): Statement {
     return this.statement(
       agent,
-      Verbs.initialized,
+      initialized,
       activity,
       context,
       registration,
@@ -80,7 +84,7 @@ export class Statements {
   ): Statement {
     const statement = this.statement(
       agent,
-      Verbs.completed,
+      completed,
       activity,
       context,
       registration,
@@ -112,7 +116,7 @@ export class Statements {
   ): Statement {
     const statement = this.statement(
       agent,
-      Verbs.terminated,
+      terminated,
       activity,
       context,
       registration,
@@ -144,7 +148,7 @@ export class Statements {
   ): Statement {
     const statement = this.statement(
       agent,
-      Verbs.progressed,
+      progressed,
       activity,
       context,
       registration,
