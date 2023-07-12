@@ -1,5 +1,5 @@
 import { Activity } from './activity';
-import { Actor, Group } from './actor';
+import { Agent, Actor, Group } from './actor';
 import { Attachment } from './attachment';
 import { Extensions } from './extensions';
 import { Result } from './result';
@@ -84,11 +84,10 @@ export interface Context {
    * Platform used in the experience of this learning activity.
    */
   platform?: string;
-
   /**
    * The language in which the experience being recorded in this Statement (mainly) occurred in.
    */
-  language?: string;
+  language?: Exclude<string, 'und' | 'Und' | 'UND'>;
 
   /**
    * Another Statement to be considered as context for this Statement.
@@ -122,7 +121,12 @@ export interface Statement {
   /**
    * Activity, Actor, or another Statement that is the Object of the Statement.
    */
-  object: Activity | StatementReference | Actor | SubStatement;
+  object:
+    | Activity
+    | StatementReference
+    | SubStatement
+    | Group
+    | (Agent & { objectType: 'Agent' });
 
   /**
    * Result Object, further details representing a measured outcome.
@@ -167,5 +171,9 @@ export interface Statement {
  */
 export interface SubStatement extends Statement {
   objectType: 'SubStatement';
-  object: Activity | StatementReference | Actor;
+  object:
+    | Activity
+    | StatementReference
+    | Group
+    | (Agent & { objectType: 'Agent' });
 }
