@@ -1,6 +1,5 @@
-import { Agent } from './actor';
 import { Activity } from './activity';
-import { Actor, Group } from './actor';
+import { Agent, Actor, Group } from './actor';
 import { Attachment } from './attachment';
 import { Extensions } from './extensions';
 import { Result } from './result';
