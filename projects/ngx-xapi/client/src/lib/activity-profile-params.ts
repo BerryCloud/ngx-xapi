@@ -1,4 +1,4 @@
-import { Activity } from 'projects/ngx-xapi/model';
+import { Activity } from '@berry-cloud/ngx-xapi/model';
 
 export interface ActivityProfileParams {
   activityId: Activity;
