@@ -8,16 +8,8 @@ export interface StatesParams {
   since?: string;
 }
 
-export interface StateParams extends StatesParams {
-  stateId: string;
-  since?: undefined;
-}
+export type StateParams = Omit<StatesParams, 'since'> & { stateId: string };
 
-export interface DeleteStatesParams extends StatesParams {
-  stateId?: undefined;
-  since?: undefined;
-}
+export type DeleteStatesParams = Omit<StatesParams, 'since' | 'stateId'>;
 
-export interface GetStatesParams extends StatesParams {
-  stateId?: undefined;
-}
+export type GetStatesParams = Omit<StatesParams, 'stateId'>;
