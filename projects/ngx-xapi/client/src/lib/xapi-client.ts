@@ -41,7 +41,7 @@ export const LRS_CONFIG = new InjectionToken<LrsConfig | Observable<LrsConfig>>(
 @Injectable({
   providedIn: 'root',
 })
-export class LrsClient {
+export class XapiClient {
   readonly stateUrl = 'activities/state';
   readonly statementsUrl = 'statements';
   readonly activitiesUrl = 'activities';
@@ -86,9 +86,7 @@ export class LrsClient {
   /**
    * Gets a list of state document ids.
    */
-  getStateIds(
-    statesParams: GetStatesParams
-  ): Observable<HttpResponse<string[]>> {
+  getStates(statesParams: GetStatesParams): Observable<HttpResponse<string[]>> {
     return this.config$.pipe(
       mergeMap((config) => {
         const httpOptions = {
