@@ -29,7 +29,7 @@ All of the exported types and methods can be accessed directly from `@berry-clou
 
 ## Configuration injection
 
-If you plan to use the client methods, you must provide an `LrsConfig` to be injected into the `XapiClient`.
+If you plan to use the client methods, you must provide an `XapiConfig` to be injected into the `XapiClient`.
 The HttpClientModule must also be imported.
 
 For example:
@@ -37,7 +37,7 @@ For example:
 ```TypeScript
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { LrsConfig, LRS_CONFIG } from '@berry-cloud/ngx-xapi/client';
+import { XapiConfig, XAPI_CONFIG } from '@berry-cloud/ngx-xapi/client';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -51,11 +51,11 @@ import { AppComponent } from './app.component';
   ],
   providers: [
     {
-      provide: LRS_CONFIG,
+      provide: XAPI_CONFIG,
       useValue: {
         endpoint: 'https://example-lrs.com/',
         authorization: 'Your authorization token',
-      } as LrsConfig,
+      } as XapiConfig,
     },
   ],
   bootstrap: [AppComponent],
@@ -71,7 +71,7 @@ API requests.
 NOTE: In a production environment the authorization header should not be hardcoded
 into the application.
 
-Alternatively you can provide an Observable of an `LrsConfig` which will be
+Alternatively you can provide an Observable of an `XapiConfig` which will be
 injected into the `XapiClient`.
 
 For example:
@@ -79,7 +79,7 @@ For example:
 ```TypeScript
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { LRS_CONFIG } from '@berry-cloud/ngx-xapi/client';
+import { XAPI_CONFIG } from '@berry-cloud/ngx-xapi/client';
 import { map } from 'rxjs/operators';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -104,7 +104,7 @@ function xapiConfigFactory(userService: UserService) {
   ],
   providers: [
     {
-      provide: LRS_CONFIG,
+      provide: XAPI_CONFIG,
       useFactory: xapiConfigFactory,
       deps: [UserService],
     },
@@ -119,7 +119,7 @@ export class AppModule {}
 ### Sending a Statement
 
 ```TypeScript
-export class ListComponent {
+export class LastPageComponent {
 
   constructor(private xapiClient: XapiClient) {}
 
@@ -142,11 +142,11 @@ export class ListComponent {
 ### Sending a State
 
 ```TypeScript
-export class ListComponent {
+export class PageService {
 
   constructor(private xapiClient: XapiClient) {}
 
-  sendProgress(
+  sendProgressState(
     activityId: string,
     agent: Agent,
     registration: string,
@@ -170,4 +170,14 @@ export class ListComponent {
 
 ### LanguageMap Pipe
 
-This pipe transforms an xAPI `LanguageMap` into a string chosing the most appropriate language from the map based on the Angular's LOCALE_ID.
+This pipe transforms an xAPI `LanguageMap` into a string choosing the most appropriate language from the map based on the Angular's LOCALE_ID.
+
+Parameters:
+
+- htmlConversion (default true) : converts multiple spaces to `&nbsp` and new lines to `<br>`. So if the `LanguageMap` contains formatted text, it will keep the basic formatting when it is rendered into HTML.
+
+Example:
+
+```HTML
+  <h1 [innerHTML]="activity.definition.name | languageMap"></h1>
+```
