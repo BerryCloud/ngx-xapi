@@ -1,7 +1,7 @@
-import { Agent } from '@berry-cloud/ngx-xapi/model';
+import { Agent, IdentifiedGroup } from '@berry-cloud/ngx-xapi/model';
 
 export interface StatementsParams {
-  agent?: Agent; // TODO could be an identified group
+  agent?: Agent | IdentifiedGroup;
   verb?: string; // IRI
   activity?: string; // IRI
   registration?: string; // UUID

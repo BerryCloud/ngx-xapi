@@ -13,9 +13,21 @@ import {
   Statement,
   StatementResult,
 } from '@berry-cloud/ngx-xapi/model';
-import { AgentProfileParams } from './agent-profile-params';
-import { StateParams } from './state-params';
+import {
+  AgentProfileParams,
+  AgentProfilesParams,
+} from './agent-profile-params';
+import {
+  DeleteStatesParams,
+  GetStatesParams,
+  StateParams,
+  StatesParams,
+} from './state-params';
 import { StatementFormat, StatementsParams } from './statements-params';
+import {
+  ActivityProfileParams,
+  ActivityProfilesParams,
+} from './activity-profile-params';
 
 export interface LrsConfig {
   endpoint: string;
@@ -29,12 +41,13 @@ export const LRS_CONFIG = new InjectionToken<LrsConfig | Observable<LrsConfig>>(
 @Injectable({
   providedIn: 'root',
 })
-export class LrsClient {
+export class XapiClient {
   readonly stateUrl = 'activities/state';
   readonly statementsUrl = 'statements';
   readonly activitiesUrl = 'activities';
 
   readonly agentsProfileUrl = 'agents/profile';
+  readonly activitiesProfileUrl = 'activities/profile';
   readonly aboutUrl = 'about';
 
   private config$: Observable<LrsConfig>;
@@ -71,6 +84,25 @@ export class LrsClient {
   }
 
   /**
+   * Gets a list of state document ids.
+   */
+  getStates(statesParams: GetStatesParams): Observable<HttpResponse<string[]>> {
+    return this.config$.pipe(
+      mergeMap((config) => {
+        const httpOptions = {
+          headers: this.getHeaders(config.authorization),
+          params: this.getStateParams(statesParams),
+          observe: 'response' as const, // Client may require headers
+        };
+
+        const url = this.normalize(config.endpoint, this.stateUrl);
+
+        return this.http.get<string[]>(url, httpOptions);
+      })
+    );
+  }
+
+  /**
    * Puts a state document.
    *
    * LRS should replace any existing state document.
@@ -97,6 +129,30 @@ export class LrsClient {
   }
 
   /**
+   * Posts a state document.
+   */
+  postState<T>(
+    object: T,
+    stateParams: StateParams,
+    options: { contentType: string; etag?: string; match?: boolean }
+  ): Observable<HttpResponse<T>> {
+    return this.config$.pipe(
+      mergeMap((config) => {
+        const httpOptions = {
+          headers: this.getHeaders(config.authorization, options),
+          params: this.getStateParams(stateParams),
+          // Client may require etag header
+          observe: 'response' as const,
+        };
+
+        const url = this.normalize(config.endpoint, this.stateUrl);
+
+        return this.http.post<T>(url, object, httpOptions);
+      })
+    );
+  }
+
+  /**
    * Deletes a state document from the LRS.
    *
    * No error will occur if the state does not exist.
@@ -110,6 +166,30 @@ export class LrsClient {
         const httpOptions = {
           headers: this.getHeaders(config.authorization, options),
           params: this.getStateParams(stateParams),
+          observe: 'response' as const,
+        };
+
+        const url = this.normalize(config.endpoint, this.stateUrl);
+
+        return this.http.delete(url, httpOptions);
+      })
+    );
+  }
+
+  /**
+   * Deletes multiple state documents from the LRS.
+   *
+   * No error will occur if the state does not exist.
+   */
+  deleteStates(
+    statesParams: DeleteStatesParams,
+    options: { etag?: string; match?: boolean }
+  ): Observable<HttpResponse<object>> {
+    return this.config$.pipe(
+      mergeMap((config) => {
+        const httpOptions = {
+          headers: this.getHeaders(config.authorization, options),
+          params: this.getStateParams(statesParams),
           observe: 'response' as const,
         };
 
@@ -155,7 +235,7 @@ export class LrsClient {
   }
 
   /**
-   * Get a single statement.
+   * Gets a single statement.
    *
    * @param statementId of the statement
    * @param format of the statement
@@ -189,7 +269,7 @@ export class LrsClient {
   }
 
   /**
-   * Get a single voided statement.
+   * Gets a single voided statement.
    *
    * @param voidedStatementId of the void statement
    * @param format of the void statement
@@ -226,7 +306,7 @@ export class LrsClient {
   }
 
   /**
-   * Get statements with HTTP response. This method is useful when client
+   * Gets statements with HTTP response. This method is useful when client
    * requires X-Experience-API-Consistent-Through header.
    *
    * @param params optional statements parameters
@@ -335,6 +415,27 @@ export class LrsClient {
   }
 
   /**
+   * Gets a list of agent profile document ids.
+   */
+  getAgentProfiles(
+    agentProfilesParams: AgentProfilesParams
+  ): Observable<HttpResponse<string[]>> {
+    return this.config$.pipe(
+      mergeMap((config) => {
+        const httpOptions = {
+          headers: this.getHeaders(config.authorization),
+          params: this.getAgentProfilesParams(agentProfilesParams),
+          observe: 'response' as const, // Client may require etag header
+        };
+
+        const url = this.normalize(config.endpoint, this.agentsProfileUrl);
+
+        return this.http.get<string[]>(url, httpOptions);
+      })
+    );
+  }
+
+  /**
    * Gets an agent profile document.
    */
   getAgentProfile<T>(
@@ -402,6 +503,138 @@ export class LrsClient {
   }
 
   /**
+   * Deletes an agent profile document.
+   */
+  deleteAgentProfile(
+    agentProfileParams: AgentProfileParams,
+    options: { etag: string; match: boolean }
+  ): Observable<HttpResponse<object>> {
+    return this.config$.pipe(
+      mergeMap((config) => {
+        const httpOptions = {
+          headers: this.getHeaders(config.authorization, options),
+          params: this.getAgentProfileParams(agentProfileParams),
+          observe: 'response' as const, // Client may require etag header
+        };
+
+        const url = this.normalize(config.endpoint, this.agentsProfileUrl);
+
+        return this.http.delete(url, httpOptions);
+      })
+    );
+  }
+
+  /**
+   * Gets a list of activity profile document ids.
+   */
+  getActivityProfiles(
+    activityProfilesParams: ActivityProfilesParams
+  ): Observable<HttpResponse<string[]>> {
+    return this.config$.pipe(
+      mergeMap((config) => {
+        const httpOptions = {
+          headers: this.getHeaders(config.authorization),
+          params: this.getActivityProfilesParams(activityProfilesParams),
+          observe: 'response' as const, // Client may require etag header
+        };
+
+        const url = this.normalize(config.endpoint, this.activitiesProfileUrl);
+
+        return this.http.get<string[]>(url, httpOptions);
+      })
+    );
+  }
+
+  /**
+   * Gets an activity profile document.
+   */
+  getActivityProfile<T>(
+    activityProfileParams: ActivityProfileParams
+  ): Observable<HttpResponse<T>> {
+    return this.config$.pipe(
+      mergeMap((config) => {
+        const httpOptions = {
+          headers: this.getHeaders(config.authorization),
+          params: this.getActivityProfileParams(activityProfileParams),
+          observe: 'response' as const, // Client may require etag header
+        };
+
+        const url = this.normalize(config.endpoint, this.activitiesProfileUrl);
+
+        return this.http.get<T>(url, httpOptions);
+      })
+    );
+  }
+
+  /**
+   * Post an activity profile document.
+   */
+  postActivityProfile<T>(
+    object: T,
+    activityProfileParams: ActivityProfileParams,
+    options: { contentType: string; etag?: string; match?: boolean }
+  ): Observable<HttpResponse<T>> {
+    return this.config$.pipe(
+      mergeMap((config) => {
+        const httpOptions = {
+          headers: this.getHeaders(config.authorization, options),
+          params: this.getActivityProfileParams(activityProfileParams),
+          observe: 'response' as const, // Client may require etag header
+        };
+
+        const url = this.normalize(config.endpoint, this.activitiesProfileUrl);
+
+        return this.http.post<T>(url, object, httpOptions);
+      })
+    );
+  }
+
+  /**
+   * Puts an activity profile document.
+   */
+  putActivityProfile<T>(
+    object: T,
+    activityProfileParams: ActivityProfileParams,
+    options: { contentType: string; etag: string; match: boolean }
+  ): Observable<HttpResponse<T>> {
+    return this.config$.pipe(
+      mergeMap((config) => {
+        const httpOptions = {
+          headers: this.getHeaders(config.authorization, options),
+          params: this.getActivityProfileParams(activityProfileParams),
+          observe: 'response' as const, // Client may require etag header
+        };
+
+        const url = this.normalize(config.endpoint, this.activitiesProfileUrl);
+
+        return this.http.put<T>(url, object, httpOptions);
+      })
+    );
+  }
+
+  /**
+   * Deletes an activity profile document.
+   */
+  deleteActivityProfile(
+    activityProfileParams: ActivityProfileParams,
+    options: { etag: string; match: boolean }
+  ): Observable<HttpResponse<object>> {
+    return this.config$.pipe(
+      mergeMap((config) => {
+        const httpOptions = {
+          headers: this.getHeaders(config.authorization, options),
+          params: this.getActivityProfileParams(activityProfileParams),
+          observe: 'response' as const, // Client may require etag header
+        };
+
+        const url = this.normalize(config.endpoint, this.activitiesProfileUrl);
+
+        return this.http.delete(url, httpOptions);
+      })
+    );
+  }
+
+  /**
    * Get the xAPI versions that this LRS supports and any additional
    * extensions.
    *
@@ -446,14 +679,21 @@ export class LrsClient {
     return headers;
   }
 
-  private getStateParams(params: StateParams): HttpParams {
+  private getStateParams(params: StatesParams): HttpParams {
     let httpParams = new HttpParams()
       .set('activityId', params.activityId)
-      .set('stateId', params.stateId)
       .set('agent', JSON.stringify(params.agent));
 
     if (params.registration) {
       httpParams = httpParams.set('registration', params.registration);
+    }
+
+    if (params.since) {
+      httpParams = httpParams.set('registration', params.since);
+    }
+
+    if (params.stateId) {
+      httpParams = httpParams.set('stateId', params.stateId);
     }
 
     return httpParams;
@@ -463,6 +703,37 @@ export class LrsClient {
     return new HttpParams()
       .set('profileId', params.profileId)
       .set('agent', JSON.stringify(params.agent));
+  }
+
+  private getAgentProfilesParams(params: AgentProfilesParams): HttpParams {
+    let httpParam = new HttpParams().set('agent', JSON.stringify(params.agent));
+
+    if (params.since) {
+      httpParam = httpParam.set('since', params.since);
+    }
+
+    return httpParam;
+  }
+
+  private getActivityProfileParams(params: ActivityProfileParams): HttpParams {
+    return new HttpParams()
+      .set('profileId', params.profileId)
+      .set('activityId', JSON.stringify(params.activityId));
+  }
+
+  private getActivityProfilesParams(
+    params: ActivityProfilesParams
+  ): HttpParams {
+    let httpParam = new HttpParams().set(
+      'activityId',
+      JSON.stringify(params.activityId)
+    );
+
+    if (params.since) {
+      httpParam = httpParam.set('since', params.since);
+    }
+
+    return httpParam;
   }
 
   private getStatementsParams(params?: StatementsParams): HttpParams {
