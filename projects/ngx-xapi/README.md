@@ -3,7 +3,7 @@
 Lightweight Angular wrapper for the
 [xAPI](https://xapi.com).
 
-It can be used to connect any xAPI compitable LRS (learning record store).
+It can be used to connect any xAPI compatible LRS (learning record store).
 
 It uses the Angular Http Client.
 
@@ -170,7 +170,7 @@ export class PageService {
 
 ### LanguageMap Pipe
 
-This pipe transforms an xAPI `LanguageMap` into a string choosing the most appropriate language from the map based on the Angular's LOCALE_ID.
+This pipe transforms an xAPI `LanguageMap` into a string choosing the most appropriate language from the map based on the Angular's `LOCALE_ID`.
 
 Parameters:
 
@@ -181,3 +181,12 @@ Example:
 ```HTML
   <h1 [innerHTML]="activity.definition.name | languageMap"></h1>
 ```
+
+## Handling Responses
+
+Most of the `XapiClient` utility methods return a `Observable<HttpResponse<T>>` object. Although in most cases `Observable<T>` would be enough, some important properties of the response can be gathered only from the response headers:
+
+- ETag
+- X-Experience-API-Consistent-Through
+
+You can access the response object itself via `response.body`;
