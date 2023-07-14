@@ -1,24 +1,173 @@
-# NgxXapi
+# ngx-xapi
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.0.
+Lightweight Angular wrapper for the
+[xAPI](https://xapi.com).
 
-## Code scaffolding
+It can be used to connect any xAPI compitable LRS (learning record store).
 
-Run `ng generate component component-name --project ngx-xapi` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ngx-xapi`.
-> Note: Don't forget to add `--project ngx-xapi` or else it will be added to the default project in your `angular.json` file. 
+It uses the Angular Http Client.
 
-## Build
+## Installation
 
-Run `ng build ngx-xapi` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+npm i @berry-cloud/ngx-xapi
+```
 
-## Publishing
+## Entry points
 
-After building your library with `ng build ngx-xapi`, go to the dist folder `cd dist/ngx-xapi` and run `npm publish`.
+The package contains two entry-points:
 
-## Running unit tests
+```
+@berry-cloud/ngx-xapi/model
+@berry-cloud/ngx-xapi/client
+```
 
-Run `ng test ngx-xapi` to execute the unit tests via [Karma](https://karma-runner.github.io).
+`@berry-cloud/ngx-xapi/model` contains the core types for xAPI. (Statement, Actor, Verb, etc.)
+`@berry-cloud/ngx-xapi/client` contains utility methods for communicating with an LRS.
 
-## Further help
+All of the exported types and methods can be accessed directly from `@berry-cloud/ngx-xapi` entry point too.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Configuration injection
+
+If you plan to use the client methods, you must provide an `LrsConfig` to be injected into the `XapiClient`.
+The HttpClientModule must also be imported.
+
+For example:
+
+```TypeScript
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { LrsConfig, LRS_CONFIG } from '@berry-cloud/ngx-xapi/client';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    // import HttpClientModule after BrowserModule.
+    HttpClientModule,
+    AppRoutingModule,
+  ],
+  providers: [
+    {
+      provide: LRS_CONFIG,
+      useValue: {
+        endpoint: 'https://example-lrs.com/',
+        authorization: 'Your authorization token',
+      } as LrsConfig,
+    },
+  ],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
+
+Remember to change the endpoint url and authorization values for your environment.
+
+The value for the authorization is sent as an authorization header when making
+API requests.
+
+NOTE: In a production environment the authorization header should not be hardcoded
+into the application.
+
+Alternatively you can provide an Observable of an `LrsConfig` which will be
+injected into the `XapiClient`.
+
+For example:
+
+```TypeScript
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { LRS_CONFIG } from '@berry-cloud/ngx-xapi/client';
+import { map } from 'rxjs/operators';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { UserService } from './user.service';
+
+function xapiConfigFactory(userService: UserService) {
+  return userService.user$.pipe(
+      map((user) => ({
+        url: 'https://example-lrs.com/',
+        authorization: `Bearer ${user.authorization}`,
+      }))
+    );
+}
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    // import HttpClientModule after BrowserModule.
+    HttpClientModule,
+    AppRoutingModule,
+  ],
+  providers: [
+    {
+      provide: LRS_CONFIG,
+      useFactory: xapiConfigFactory,
+      deps: [UserService],
+    },
+  ],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
+
+## Most Common Use-cases
+
+### Sending a Statement
+
+```TypeScript
+export class ListComponent {
+
+  constructor(private xapiClient: XapiClient) {}
+
+  sendPassedStatement(actor: Actor, course: Course): Observable<Statement> {
+
+    const statement: Statement = {
+        id: uuidv4().toString(),
+        actor,
+        verb: passed,
+        object: getCourseActivity(course),
+        timestamp: Date.now().toString(),
+        context: { registration: course.registration },
+    };
+
+    return this.xapiClient.postStatement(statement).pipe(map(() => statement));
+  }
+}
+```
+
+### Sending a State
+
+```TypeScript
+export class ListComponent {
+
+  constructor(private xapiClient: XapiClient) {}
+
+  sendProgress(
+    activityId: string,
+    agent: Agent,
+    registration: string,
+    progress: Progress
+  ): Observable<HttpResponse<Progress>> {
+    return this.putState<Progress>(
+      progress,
+      {
+        activityId,
+        agent,
+        stateId: 'progress',
+        registration,
+      },
+      {
+        contentType: 'application/json',
+      }
+    );
+  }
+}
+```
+
+### LanguageMap Pipe
+
+This pipe transforms an xAPI `LanguageMap` into a string chosing the most appropriate language from the map based on the Angular's LOCALE_ID.
