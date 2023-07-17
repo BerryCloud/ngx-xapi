@@ -118,11 +118,13 @@ export class AppModule {}
 ### Sending a Statement
 
 ```TypeScript
-export class LastPageComponent {
+export class PageComponent {
+
+  lastStatement: Statement | undefined;
 
   constructor(private xapiClient: XapiClient) {}
 
-  sendPassedStatement(actor: Actor, course: Course): Observable<Statement> {
+  sendPassedStatement(actor: Actor, course: Course){
 
     const statement: Statement = {
         id: uuidv4().toString(),
@@ -133,7 +135,9 @@ export class LastPageComponent {
         context: { registration: course.registration },
     };
 
-    return this.xapiClient.postStatement(statement).pipe(map(() => statement));
+    this.xapiClient.postStatement(statement).subscribe(
+      () => this.lastStatement = statement;
+    );
   }
 }
 ```
@@ -141,7 +145,9 @@ export class LastPageComponent {
 ### Sending a State
 
 ```TypeScript
-export class PageService {
+export class PageComponent {
+
+  lastProgress: Progress | undefiened;
 
   constructor(private xapiClient: XapiClient) {}
 
@@ -150,8 +156,8 @@ export class PageService {
     agent: Agent,
     registration: string,
     progress: Progress
-  ): Observable<HttpResponse<Progress>> {
-    return this.putState<Progress>(
+  ): {
+    this.putState<Progress>(
       progress,
       {
         activityId,
@@ -162,6 +168,8 @@ export class PageService {
       {
         contentType: 'application/json',
       }
+    ).subscribe(
+      () => this.lastProgress = progress;
     );
   }
 }
