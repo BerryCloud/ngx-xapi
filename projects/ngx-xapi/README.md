@@ -1,7 +1,6 @@
 # ngx-xapi
 
-Lightweight Angular wrapper for the
-[xAPI](https://xapi.com).
+Lightweight Angular wrapper for [xAPI](https://xapi.com).
 
 It can be used to connect any xAPI compatible LRS (learning record store).
 
