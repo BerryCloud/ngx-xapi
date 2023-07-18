@@ -115,67 +115,7 @@ export class AppModule {}
 
 ## Samples
 
-See [BerryCloud/ngx-xapi GitHub repository](https://github.com/BerryCloud/ngx-xapi) for [Sample applications](https://github.com/BerryCloud/ngx-xapi/tree/main/projects/samples)
-
-### Sending a Statement
-
-```TypeScript
-export class PageComponent {
-
-  lastStatement: Statement | undefined;
-
-  constructor(private xapiClient: XapiClient) {}
-
-  sendPassedStatement(actor: Actor, course: Course){
-
-    const statement: Statement = {
-        id: uuidv4().toString(),
-        actor,
-        verb: passed,
-        object: getCourseActivity(course),
-        timestamp: Date.now().toString(),
-        context: { registration: course.registration },
-    };
-
-    this.xapiClient.postStatement(statement).subscribe(
-      () => this.lastStatement = statement;
-    );
-  }
-}
-```
-
-### Sending a State
-
-```TypeScript
-export class PageComponent {
-
-  lastProgress: Progress | undefiened;
-
-  constructor(private xapiClient: XapiClient) {}
-
-  sendProgressState(
-    activityId: string,
-    agent: Agent,
-    registration: string,
-    progress: Progress
-  ): {
-    this.putState<Progress>(
-      progress,
-      {
-        activityId,
-        agent,
-        stateId: 'progress',
-        registration,
-      },
-      {
-        contentType: 'application/json',
-      }
-    ).subscribe(
-      () => this.lastProgress = progress;
-    );
-  }
-}
-```
+See [BerryCloud/ngx-xapi GitHub repository](https://github.com/BerryCloud/ngx-xapi) for [Sample application](https://github.com/BerryCloud/ngx-xapi/tree/main/projects/samples)
 
 ### LanguageMap Pipe
 
