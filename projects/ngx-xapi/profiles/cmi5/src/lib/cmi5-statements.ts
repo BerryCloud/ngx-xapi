@@ -123,7 +123,7 @@ export class Cmi5Statements {
       actor: agent,
       verb,
       object: activity,
-      timestamp: timestamp?.toISOString() || new Date().toISOString(),
+      timestamp: timestamp?.toISOString() ?? new Date().toISOString(),
 
       context: {
         registration,
