@@ -7,8 +7,6 @@ import { Statement, passed } from '@berry-cloud/ngx-xapi/model';
   templateUrl: './post-statement.component.html',
 })
 export class PostStatementComponent {
-  title = 'Post Statement Sample';
-
   response: string | undefined;
 
   constructor(private client: XapiClient) {}
