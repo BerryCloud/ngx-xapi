@@ -7,7 +7,7 @@ import { Statement, passed } from '@berry-cloud/ngx-xapi/model';
   templateUrl: './post-statement.component.html',
 })
 export class PostStatementComponent {
-  response: string | undefined;
+  response?: string | null;
 
   constructor(private client: XapiClient) {}
 
@@ -30,8 +30,7 @@ export class PostStatementComponent {
     };
 
     this.client.postStatement(statement).subscribe({
-      next: (response) =>
-        (this.response = response.body ? response.body : undefined),
+      next: (response) => (this.response = response.body),
       error: (error) => (this.response = error.message),
     });
   }

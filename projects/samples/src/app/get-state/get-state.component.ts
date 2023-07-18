@@ -6,7 +6,7 @@ import { XapiClient } from '@berry-cloud/ngx-xapi/client';
   templateUrl: './get-state.component.html',
 })
 export class GetStateComponent {
-  response: any | undefined;
+  response: any;
 
   constructor(private client: XapiClient) {}
 
