@@ -212,10 +212,7 @@ export class XapiClient {
     return this.postStatements([statement]).pipe(
       map((response) => {
         return new HttpResponse({
-          body:
-            response.body && response.body.length
-              ? response.body[0]
-              : undefined,
+          body: response.body?.length ? response.body[0] : undefined,
           headers: response.headers,
           status: response.status,
           statusText: response.statusText,
