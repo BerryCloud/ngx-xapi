@@ -14,7 +14,8 @@
     "paths": {
       "@berry-cloud/samples/post-statement": [
         "dist/samples/post-statement"
-      ],      "@berry-cloud/ngx-xapi/profiles/cmi5": [
+      ],      
+      "@berry-cloud/ngx-xapi/profiles/cmi5": [
         "dist/ngx-xapi/profiles/cmi5"
       ],
       "@berry-cloud/ngx-xapi/model": [
