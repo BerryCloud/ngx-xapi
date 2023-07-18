@@ -6,7 +6,7 @@ import {
 } from '@angular/common/http';
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import {
   About,
   Activity,
@@ -107,11 +107,11 @@ export class XapiClient {
    *
    * LRS should replace any existing state document.
    */
-  putState<T>(
-    object: T,
+  putState(
+    object: any,
     stateParams: StateParams,
     options: { contentType: string; etag?: string; match?: boolean }
-  ): Observable<HttpResponse<T>> {
+  ): Observable<HttpResponse<object>> {
     return this.config$.pipe(
       mergeMap((config) => {
         const httpOptions = {
@@ -123,7 +123,7 @@ export class XapiClient {
 
         const url = this.normalize(config.endpoint, this.stateUrl);
 
-        return this.http.put<T>(url, object, httpOptions);
+        return this.http.put(url, object, httpOptions);
       })
     );
   }
@@ -131,11 +131,11 @@ export class XapiClient {
   /**
    * Posts a state document.
    */
-  postState<T>(
-    object: T,
+  postState(
+    object: any,
     stateParams: StateParams,
     options: { contentType: string; etag?: string; match?: boolean }
-  ): Observable<HttpResponse<T>> {
+  ): Observable<HttpResponse<object>> {
     return this.config$.pipe(
       mergeMap((config) => {
         const httpOptions = {
@@ -147,7 +147,7 @@ export class XapiClient {
 
         const url = this.normalize(config.endpoint, this.stateUrl);
 
-        return this.http.post<T>(url, object, httpOptions);
+        return this.http.post(url, object, httpOptions);
       })
     );
   }
@@ -208,8 +208,18 @@ export class XapiClient {
    *
    * @returns statement id for the given statement
    */
-  postStatement(statement: Statement): Observable<HttpResponse<string[]>> {
-    return this.postStatements([statement]);
+  postStatement(statement: Statement): Observable<HttpResponse<string>> {
+    return this.postStatements([statement]).pipe(
+      map((response) => {
+        return new HttpResponse({
+          body: response.body?.length ? response.body[0] : undefined,
+          headers: response.headers,
+          status: response.status,
+          statusText: response.statusText,
+          url: response.url ?? undefined,
+        });
+      })
+    );
   }
 
   /**
@@ -457,13 +467,13 @@ export class XapiClient {
   }
 
   /**
-   * Post an agent profile document.
+   * Posts an agent profile document.
    */
-  postAgentProfile<T>(
-    object: T,
+  postAgentProfile(
+    object: any,
     agentProfileParams: AgentProfileParams,
     options: { contentType: string; etag?: string; match?: boolean }
-  ): Observable<HttpResponse<T>> {
+  ): Observable<HttpResponse<object>> {
     return this.config$.pipe(
       mergeMap((config) => {
         const httpOptions = {
@@ -474,7 +484,7 @@ export class XapiClient {
 
         const url = this.normalize(config.endpoint, this.agentsProfileUrl);
 
-        return this.http.post<T>(url, object, httpOptions);
+        return this.http.post(url, object, httpOptions);
       })
     );
   }
@@ -482,11 +492,11 @@ export class XapiClient {
   /**
    * Puts an agent profile document.
    */
-  putAgentProfile<T>(
-    object: T,
+  putAgentProfile(
+    object: any,
     agentProfileParams: AgentProfileParams,
     options: { contentType: string; etag: string; match: boolean }
-  ): Observable<HttpResponse<T>> {
+  ): Observable<HttpResponse<object>> {
     return this.config$.pipe(
       mergeMap((config) => {
         const httpOptions = {
@@ -497,7 +507,7 @@ export class XapiClient {
 
         const url = this.normalize(config.endpoint, this.agentsProfileUrl);
 
-        return this.http.put<T>(url, object, httpOptions);
+        return this.http.put(url, object, httpOptions);
       })
     );
   }
@@ -567,13 +577,13 @@ export class XapiClient {
   }
 
   /**
-   * Post an activity profile document.
+   * Posts an activity profile document.
    */
-  postActivityProfile<T>(
-    object: T,
+  postActivityProfile(
+    object: any,
     activityProfileParams: ActivityProfileParams,
     options: { contentType: string; etag?: string; match?: boolean }
-  ): Observable<HttpResponse<T>> {
+  ): Observable<HttpResponse<object>> {
     return this.config$.pipe(
       mergeMap((config) => {
         const httpOptions = {
@@ -584,7 +594,7 @@ export class XapiClient {
 
         const url = this.normalize(config.endpoint, this.activitiesProfileUrl);
 
-        return this.http.post<T>(url, object, httpOptions);
+        return this.http.post(url, object, httpOptions);
       })
     );
   }
@@ -592,11 +602,11 @@ export class XapiClient {
   /**
    * Puts an activity profile document.
    */
-  putActivityProfile<T>(
-    object: T,
+  putActivityProfile(
+    object: any,
     activityProfileParams: ActivityProfileParams,
     options: { contentType: string; etag: string; match: boolean }
-  ): Observable<HttpResponse<T>> {
+  ): Observable<HttpResponse<object>> {
     return this.config$.pipe(
       mergeMap((config) => {
         const httpOptions = {
@@ -607,7 +617,7 @@ export class XapiClient {
 
         const url = this.normalize(config.endpoint, this.activitiesProfileUrl);
 
-        return this.http.put<T>(url, object, httpOptions);
+        return this.http.put(url, object, httpOptions);
       })
     );
   }
@@ -635,7 +645,7 @@ export class XapiClient {
   }
 
   /**
-   * Get the xAPI versions that this LRS supports and any additional
+   * Gets the xAPI versions that this LRS supports and any additional
    * extensions.
    *
    * @returns About object containing supported xAPI versions
