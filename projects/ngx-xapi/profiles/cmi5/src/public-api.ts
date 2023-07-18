@@ -1,5 +1,5 @@
 /*
- * Public API Surface of ngx-xapi/client
+ * Public API Surface of ngx-xapi/profile/cmi5
  */
 
 export * from './lib/cmi5-statements';

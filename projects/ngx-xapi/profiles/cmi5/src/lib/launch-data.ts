@@ -28,5 +28,4 @@ export interface EntitlementKey {
   alternate?: string;
 }
 
-// TODO move somewhere else
 export type LaunchMethod = 'OwnWindow' | 'AnyWindow';
