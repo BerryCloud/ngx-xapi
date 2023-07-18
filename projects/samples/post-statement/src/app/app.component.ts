@@ -10,9 +10,13 @@ import { Statement, passed } from '@berry-cloud/ngx-xapi/model';
 export class AppComponent {
   title = 'post-statement';
 
-  statementId: string | undefined;
+  response: string | undefined;
 
   constructor(private client: XapiClient) {}
+
+  ngOnInit(): void {
+    this.sendPassedStatement();
+  }
 
   sendPassedStatement() {
     const statement: Statement = {
@@ -28,11 +32,10 @@ export class AppComponent {
       },
     };
 
-    this.client
-      .postStatement(statement)
-      .subscribe(
-        (response) =>
-          (this.statementId = response.body ? response.body[0] : undefined)
-      );
+    this.client.postStatement(statement).subscribe({
+      next: (response) =>
+        (this.response = response.body ? response.body[0] : undefined),
+      error: (error) => (this.response = error.message),
+    });
   }
 }

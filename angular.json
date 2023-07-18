@@ -37,27 +37,23 @@
     "post-statement": {
       "projectType": "application",
       "schematics": {},
-      "root": "projects/post-statement",
-      "sourceRoot": "projects/post-statement/src",
+      "root": "projects/samples/post-statement",
+      "sourceRoot": "projects/samples/post-statement/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/post-statement",
-            "index": "projects/post-statement/src/index.html",
-            "main": "projects/post-statement/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
-            "tsConfig": "projects/post-statement/tsconfig.app.json",
+            "outputPath": "dist/samples/post-statement",
+            "index": "projects/samples/post-statement/src/index.html",
+            "main": "projects/samples/post-statement/src/main.ts",
+            "polyfills": ["zone.js"],
+            "tsConfig": "projects/samples/post-statement/tsconfig.app.json",
             "assets": [
-              "projects/post-statement/src/favicon.ico",
-              "projects/post-statement/src/assets"
+              "projects/samples/post-statement/src/favicon.ico",
+              "projects/samples/post-statement/src/assets"
             ],
-            "styles": [
-              "projects/post-statement/src/styles.css"
-            ],
+            "styles": ["projects/samples/post-statement/src/styles.css"],
             "scripts": []
           },
           "configurations": {
@@ -108,18 +104,13 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
-            "tsConfig": "projects/post-statement/tsconfig.spec.json",
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "tsConfig": "projects/samples/post-statement/tsconfig.spec.json",
             "assets": [
-              "projects/post-statement/src/favicon.ico",
-              "projects/post-statement/src/assets"
+              "projects/samples/post-statement/src/favicon.ico",
+              "projects/samples/post-statement/src/assets"
             ],
-            "styles": [
-              "projects/post-statement/src/styles.css"
-            ],
+            "styles": ["projects/samples/post-statement/src/styles.css"],
             "scripts": []
           }
         }
