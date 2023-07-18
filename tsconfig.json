@@ -12,6 +12,9 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "paths": {
+      "@berry-cloud/ngx-xapi/profiles/cmi5": [
+        "dist/ngx-xapi/profiles/cmi5"
+      ],
       "@berry-cloud/ngx-xapi/model": [
         "dist/ngx-xapi/model"
       ],
