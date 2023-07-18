@@ -29,14 +29,14 @@ import {
   ActivityProfilesParams,
 } from './activity-profile-params';
 
-export interface LrsConfig {
+export interface XapiConfig {
   endpoint: string;
   authorization: string;
 }
 
-export const LRS_CONFIG = new InjectionToken<LrsConfig | Observable<LrsConfig>>(
-  'lrs.config'
-);
+export const XAPI_CONFIG = new InjectionToken<
+  XapiConfig | Observable<XapiConfig>
+>('lrs.config');
 
 @Injectable({
   providedIn: 'root',
@@ -50,12 +50,12 @@ export class XapiClient {
   readonly activitiesProfileUrl = 'activities/profile';
   readonly aboutUrl = 'about';
 
-  private config$: Observable<LrsConfig>;
+  private config$: Observable<XapiConfig>;
 
   constructor(
     private http: HttpClient,
-    @Inject(LRS_CONFIG)
-    config: LrsConfig | Observable<LrsConfig>
+    @Inject(XAPI_CONFIG)
+    config: XapiConfig | Observable<XapiConfig>
   ) {
     if (config instanceof Observable) {
       this.config$ = config;
