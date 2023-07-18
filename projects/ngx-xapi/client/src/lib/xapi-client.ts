@@ -36,7 +36,7 @@ export interface XapiConfig {
 
 export const XAPI_CONFIG = new InjectionToken<
   XapiConfig | Observable<XapiConfig>
->('lrs.config');
+>('xapi.config');
 
 @Injectable({
   providedIn: 'root',
