@@ -2,10 +2,8 @@
 
 Lightweight Angular wrapper for [xAPI](https://xapi.com).
 
-See [package documentation](projects/ngx-xapi/README.md) for details.
+See [package documentation](projects/ngx-xapi#readme) for details.
 
 [NPM @berry-cloud/ngx-xapi](https://www.npmjs.com/package/@berry-cloud/ngx-xapi).
 
-# Samples
-
-[Post Statement](samples/post-statement/README.md)
+## [Sample applications](projects/samples#readme)

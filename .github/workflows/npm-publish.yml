@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: 18
       - run: npm ci
-      - run: npx ng build
-      - run: npx ng test --no-watch --no-progress --browsers=ChromeHeadless
+      - run: npx ng build ngx-xapi
+      - run: npx ng test ngx-xapi --no-watch --no-progress --browsers=ChromeHeadless
 
   publish-npm:
     needs: build
@@ -30,7 +30,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: |
-          npx ng build
+          npx ng build ngx-xapi
           cd dist/ngx-xapi/
           npm publish --access public
         env:

@@ -26,7 +26,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
       - run: npm ci
-      - run: npx ng build
+      - run: npx ng build ngx-xapi
       # TODO add linting
       - run: npx ng test --no-watch --no-progress --code-coverage --browsers=ChromeHeadless
       - name: SonarCloud Scan
