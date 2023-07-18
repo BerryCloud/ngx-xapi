@@ -1,7 +1,7 @@
 {
   "name": "@berry-cloud/ngx-xapi",
   "private": false,
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Angular library for xAPI",
   "license": "  Apache-2.0",
   "repository": {
@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/BerryCloud/ngx-xapi#readme",
   "scripts": {
-    "preversion": "ng build && ng test --no-watch --no-progress --browsers=ChromeHeadless",
+    "preversion": "ng build ngx-xapi && ng test ngx-xapi --no-watch --no-progress --browsers=ChromeHeadless",
     "version": "git add . && git commit -m \"Version $npm_package_version\" && git tag v$npm_package_version",
     "postversion": "git push && git push --tags"
   },
