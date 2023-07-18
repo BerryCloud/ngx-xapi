@@ -14,17 +14,20 @@ npm i @berry-cloud/ngx-xapi
 
 ## Entry points
 
-The package contains two entry-points:
+The package contains the following entry-points:
 
 ```
+@berry-cloud/ngx-xapi
 @berry-cloud/ngx-xapi/model
 @berry-cloud/ngx-xapi/client
+@berry-cloud/ngx-xapi/profiles/cmi5
 ```
 
 `@berry-cloud/ngx-xapi/model` contains the core types for xAPI. (Statement, Actor, Verb, etc.)
 `@berry-cloud/ngx-xapi/client` contains utility methods for communicating with an LRS.
+`@berry-cloud/ngx-xapi/profiles/cmi5` contains types and extensions for the cmi5 profile.
 
-All of the exported types and methods can be accessed directly from `@berry-cloud/ngx-xapi` entry point too.
+All of the exported types and methods from model and client can be accessed directly from `@berry-cloud/ngx-xapi` entry point too.
 
 ## Configuration injection
 
