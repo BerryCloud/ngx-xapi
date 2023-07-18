@@ -113,7 +113,9 @@ function xapiConfigFactory(userService: UserService) {
 export class AppModule {}
 ```
 
-## Most Common Use-cases
+## Samples
+
+See [BerryCloud/ngx-xapi GitHub repository](https://github.com/BerryCloud/ngx-xapi) for [Sample applications](https://github.com/BerryCloud/ngx-xapi/tree/main/projects/samples)
 
 ### Sending a Statement
 
