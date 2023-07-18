@@ -1,3 +1,3 @@
-## @berry-cloud/ngx-xapi Sample Applications
+## @berry-cloud/ngx-xapi Sample Application
 
-See subfolders above for sample applications.
+The application contains several components for the most common XapiClient use-cases.

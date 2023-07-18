@@ -6,4 +6,4 @@ See [package documentation](projects/ngx-xapi#readme) for details.
 
 [NPM @berry-cloud/ngx-xapi](https://www.npmjs.com/package/@berry-cloud/ngx-xapi).
 
-## [Sample applications](projects/samples#readme)
+## [Sample application](projects/samples#readme)

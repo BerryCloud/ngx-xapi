@@ -34,26 +34,26 @@
         }
       }
     },
-    "post-statement": {
+    "samples": {
       "projectType": "application",
       "schematics": {},
-      "root": "projects/samples/post-statement",
-      "sourceRoot": "projects/samples/post-statement/src",
+      "root": "projects/samples",
+      "sourceRoot": "projects/samples/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/samples/post-statement",
-            "index": "projects/samples/post-statement/src/index.html",
-            "main": "projects/samples/post-statement/src/main.ts",
+            "outputPath": "dist/samples",
+            "index": "projects/samples/src/index.html",
+            "main": "projects/samples/src/main.ts",
             "polyfills": ["zone.js"],
-            "tsConfig": "projects/samples/post-statement/tsconfig.app.json",
+            "tsConfig": "projects/samples/tsconfig.app.json",
             "assets": [
-              "projects/samples/post-statement/src/favicon.ico",
-              "projects/samples/post-statement/src/assets"
+              "projects/samples/src/favicon.ico",
+              "projects/samples/src/assets"
             ],
-            "styles": ["projects/samples/post-statement/src/styles.css"],
+            "styles": ["projects/samples/src/styles.css"],
             "scripts": []
           },
           "configurations": {
@@ -87,10 +87,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "post-statement:build:production"
+              "browserTarget": "samples:build:production"
             },
             "development": {
-              "browserTarget": "post-statement:build:development"
+              "browserTarget": "samples:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -98,19 +98,19 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "post-statement:build"
+            "browserTarget": "samples:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "polyfills": ["zone.js", "zone.js/testing"],
-            "tsConfig": "projects/samples/post-statement/tsconfig.spec.json",
+            "tsConfig": "projects/samples/tsconfig.spec.json",
             "assets": [
-              "projects/samples/post-statement/src/favicon.ico",
-              "projects/samples/post-statement/src/assets"
+              "projects/samples/src/favicon.ico",
+              "projects/samples/src/assets"
             ],
-            "styles": ["projects/samples/post-statement/src/styles.css"],
+            "styles": ["projects/samples/src/styles.css"],
             "scripts": []
           }
         }

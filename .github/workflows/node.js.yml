@@ -27,6 +27,7 @@ jobs:
           cache: "npm"
       - run: npm ci
       - run: npx ng build ngx-xapi
+      - run: npx ng build samples
       # TODO add linting
       - run: npx ng test ngx-xapi --no-watch --no-progress --code-coverage --browsers=ChromeHeadless
       - name: SonarCloud Scan
