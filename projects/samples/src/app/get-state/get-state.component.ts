@@ -3,7 +3,12 @@ import { XapiClient } from '@berry-cloud/ngx-xapi/client';
 
 @Component({
   selector: 'get-state',
-  templateUrl: './get-state.component.html',
+  template: `
+    <h2>Get State</h2>
+
+    Response:
+    <pre>{{ response }}</pre>
+  `,
 })
 export class GetStateComponent {
   response: any;

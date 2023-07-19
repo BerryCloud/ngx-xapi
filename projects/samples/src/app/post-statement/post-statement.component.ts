@@ -4,7 +4,12 @@ import { Statement, passed } from '@berry-cloud/ngx-xapi/model';
 
 @Component({
   selector: 'post-statement',
-  templateUrl: './post-statement.component.html',
+  template: `
+    <h2>Post Statement</h2>
+
+    Response:
+    <pre>{{ response }}</pre>
+  `,
 })
 export class PostStatementComponent {
   response?: string | null;

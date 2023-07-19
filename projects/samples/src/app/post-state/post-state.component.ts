@@ -3,7 +3,12 @@ import { XapiClient } from '@berry-cloud/ngx-xapi/client';
 
 @Component({
   selector: 'post-state',
-  templateUrl: './post-state.component.html',
+  template: `
+    <h2>Post State</h2>
+
+    Response:
+    <pre>{{ response }}</pre>
+  `,
 })
 export class PostStateComponent {
   response: string | undefined;
