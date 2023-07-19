@@ -120,6 +120,56 @@ export class AppModule {}
 
 See [BerryCloud/ngx-xapi GitHub repository](https://github.com/BerryCloud/ngx-xapi) for [Sample application](https://github.com/BerryCloud/ngx-xapi/tree/main/projects/samples)
 
+## Post Statement
+
+```TypeScript
+postPassedStatement() {
+  const statement: Statement = {
+    actor: {
+      name: 'A N Other',
+      mbox: 'mailto:another@example.com',
+      objectType: 'Agent',
+    },
+    verb: passed,
+    object: {
+      id: 'https://example.com/activity/simplestatement',
+      definition: { name: { en: 'Simple Statement' } },
+    },
+  };
+
+  this.client.postStatement(statement).subscribe({
+    next: (response) => (this.response = response.body),
+    error: (error) => (this.response = error.message),
+  });
+}
+```
+
+## Post State
+
+```TypeScript
+postState(state: any) {
+  this.client
+    .postState(
+      state,
+      {
+        activityId: 'https://example.com/activity',
+        agent: {
+          mbox: 'mailto:another@example.com',
+        },
+        stateId: 'progress',
+      },
+      {
+        contentType: 'application/json',
+      }
+    )
+    .subscribe({
+      next: (response) =>
+        (this.response = response.status === 204 ? 'Success' : 'Failure'),
+      error: (error) => (this.response = error.message),
+    });
+}
+```
+
 ### LanguageMap Pipe
 
 This pipe transforms an xAPI `LanguageMap` into a string choosing the most appropriate language from the map based on the Angular's `LOCALE_ID`.

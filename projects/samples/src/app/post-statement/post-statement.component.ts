@@ -12,10 +12,10 @@ export class PostStatementComponent {
   constructor(private client: XapiClient) {}
 
   ngOnInit(): void {
-    this.sendPassedStatement();
+    this.postPassedStatement();
   }
 
-  sendPassedStatement() {
+  postPassedStatement() {
     const statement: Statement = {
       actor: {
         name: 'A N Other',

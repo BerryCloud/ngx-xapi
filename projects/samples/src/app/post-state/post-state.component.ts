@@ -11,10 +11,10 @@ export class PostStateComponent {
   constructor(private client: XapiClient) {}
 
   ngOnInit(): void {
-    this.sendState({ progress: 0.5 });
+    this.postState({ progress: 0.5 });
   }
 
-  sendState(state: any) {
+  postState(state: any) {
     this.client
       .postState(
         state,
