@@ -23,7 +23,7 @@ import { PostStatementComponent } from './post-statement/post-statement.componen
       provide: XAPI_CONFIG,
       useValue: {
         endpoint: 'https://lrs.adlnet.gov/xapi/',
-        authorization: 'Basic eGFwaS10b29sczp4YXBpLXRvb2xz',
+        authorization: '',
       } as XapiConfig,
     },
   ],
