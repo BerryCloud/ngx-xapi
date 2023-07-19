@@ -22,10 +22,8 @@ import { GetStatementComponent } from './get-statement/get-statement.component';
     {
       provide: XAPI_CONFIG,
       useValue: {
-        // endpoint: 'https://example-lrs.com/',
-        // authorization: 'Your authorization token',
-        endpoint: 'http://localhost:8080/xapi/',
-        authorization: 'Basic YWRtaW46cGFzc3dvcmQ=',
+        endpoint: 'https://example-lrs.com/',
+        authorization: 'Your authorization token',
       } as XapiConfig,
     },
   ],
