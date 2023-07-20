@@ -6,24 +6,24 @@ This directory contains sample code for ngx-api.
 
 To run the samples, you need to have [Node.js](https://nodejs.org/en/) installed.
 
-    Then, install the dependencies:
+Then, install the dependencies:
 
-    ```bash
-    npm install
-    ```
+```bash
+npm install
+```
 
-    Then build the library:
+Then build the library:
 
-    ```bash
-    ng build ngx-api
-    ```
+```bash
+ng build ngx-api
+```
 
-    Then run the sample:
+Then run the sample:
 
-    ```bash
-    ng serve
-    ```
+```bash
+ng serve
+```
 
-    Then navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Then navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-    You can change the client configuration in `src/app/app.module.ts` to point to your own LRS.
+You can change the client configuration in `src/app/app.module.ts` to point to your own LRS.
