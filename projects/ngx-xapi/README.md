@@ -14,17 +14,20 @@ npm i @berry-cloud/ngx-xapi
 
 ## Entry points
 
-The package contains two entry-points:
+The package contains the following entry-points:
 
 ```
+@berry-cloud/ngx-xapi
 @berry-cloud/ngx-xapi/model
 @berry-cloud/ngx-xapi/client
+@berry-cloud/ngx-xapi/profiles/cmi5
 ```
 
 `@berry-cloud/ngx-xapi/model` contains the core types for xAPI. (Statement, Actor, Verb, etc.)
 `@berry-cloud/ngx-xapi/client` contains utility methods for communicating with an LRS.
+`@berry-cloud/ngx-xapi/profiles/cmi5` contains types and extensions for the cmi5 profile.
 
-All of the exported types and methods can be accessed directly from `@berry-cloud/ngx-xapi` entry point too.
+All of the exported types and methods from model and client can be accessed directly from `@berry-cloud/ngx-xapi` entry point too.
 
 ## Configuration injection
 
@@ -115,65 +118,55 @@ export class AppModule {}
 
 ## Samples
 
-See [BerryCloud/ngx-xapi GitHub repository](https://github.com/BerryCloud/ngx-xapi) for [Sample applications](https://github.com/BerryCloud/ngx-xapi/tree/main/projects/samples)
+See [BerryCloud/ngx-xapi GitHub repository](https://github.com/BerryCloud/ngx-xapi) for [Sample application](https://github.com/BerryCloud/ngx-xapi/tree/main/projects/samples)
 
-### Sending a Statement
+## Post Statement
 
 ```TypeScript
-export class PageComponent {
+postPassedStatement() {
+  const statement: Statement = {
+    actor: {
+      name: 'A N Other',
+      mbox: 'mailto:another@example.com',
+      objectType: 'Agent',
+    },
+    verb: passed,
+    object: {
+      id: 'https://example.com/activity/simplestatement',
+      definition: { name: { en: 'Simple Statement' } },
+    },
+  };
 
-  lastStatement: Statement | undefined;
-
-  constructor(private xapiClient: XapiClient) {}
-
-  sendPassedStatement(actor: Actor, course: Course){
-
-    const statement: Statement = {
-        id: uuidv4().toString(),
-        actor,
-        verb: passed,
-        object: getCourseActivity(course),
-        timestamp: Date.now().toString(),
-        context: { registration: course.registration },
-    };
-
-    this.xapiClient.postStatement(statement).subscribe(
-      () => this.lastStatement = statement;
-    );
-  }
+  this.client.postStatement(statement).subscribe({
+    next: (response) => (this.response = response.body),
+    error: (error) => (this.response = error.message),
+  });
 }
 ```
 
-### Sending a State
+## Post State
 
 ```TypeScript
-export class PageComponent {
-
-  lastProgress: Progress | undefiened;
-
-  constructor(private xapiClient: XapiClient) {}
-
-  sendProgressState(
-    activityId: string,
-    agent: Agent,
-    registration: string,
-    progress: Progress
-  ): {
-    this.putState<Progress>(
-      progress,
+postState(state: any) {
+  this.client
+    .postState(
+      state,
       {
-        activityId,
-        agent,
+        activityId: 'https://example.com/activity',
+        agent: {
+          mbox: 'mailto:another@example.com',
+        },
         stateId: 'progress',
-        registration,
       },
       {
         contentType: 'application/json',
       }
-    ).subscribe(
-      () => this.lastProgress = progress;
-    );
-  }
+    )
+    .subscribe({
+      next: (response) =>
+        (this.response = response.status === 204 ? 'Success' : 'Failure'),
+      error: (error) => (this.response = error.message),
+    });
 }
 ```
 

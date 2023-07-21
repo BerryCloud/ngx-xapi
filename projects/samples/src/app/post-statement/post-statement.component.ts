@@ -3,22 +3,24 @@ import { XapiClient } from '@berry-cloud/ngx-xapi/client';
 import { Statement, passed } from '@berry-cloud/ngx-xapi/model';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-})
-export class AppComponent {
-  title = 'post-statement';
+  selector: 'post-statement',
+  template: `
+    <h2>Post Statement</h2>
 
-  response: string | undefined;
+    Response:
+    <pre>{{ response }}</pre>
+  `,
+})
+export class PostStatementComponent {
+  response?: string | null;
 
   constructor(private client: XapiClient) {}
 
   ngOnInit(): void {
-    this.sendPassedStatement();
+    this.postPassedStatement();
   }
 
-  sendPassedStatement() {
+  postPassedStatement() {
     const statement: Statement = {
       actor: {
         name: 'A N Other',
@@ -33,8 +35,7 @@ export class AppComponent {
     };
 
     this.client.postStatement(statement).subscribe({
-      next: (response) =>
-        (this.response = response.body ? response.body[0] : undefined),
+      next: (response) => (this.response = response.body),
       error: (error) => (this.response = error.message),
     });
   }
