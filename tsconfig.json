@@ -21,6 +21,9 @@
       "@berry-cloud/ngx-xapi/client": [
         "dist/ngx-xapi/client"
       ],
+      "@berry-cloud/ngx-xapi/course": [
+        "dist/ngx-xapi/course"
+      ],
       "@berry-cloud/ngx-xapi": [
         "dist/ngx-xapi"
       ]
