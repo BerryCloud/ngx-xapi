@@ -3,4 +3,3 @@
  */
 
 export * from './lib/xapi-course';
-export * from './lib/xapi-course.module';
