@@ -1,13 +1,15 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { ActivatedRoute, Params } from '@angular/router';
 import {
   Activity,
-  ActivityDefinition,
-  Agent,
   Context,
   Statement,
+  Verb,
   completed,
+  experienced,
+  failed,
   initialized,
+  passed,
+  progressed,
 } from '@berry-cloud/ngx-xapi/model';
 import {
   XapiClient,
@@ -17,102 +19,184 @@ import {
 import {
   Observable,
   ReplaySubject,
+  catchError,
+  forkJoin,
   map,
-  merge,
   mergeMap,
   of,
-  skip,
   take,
   tap,
 } from 'rxjs';
 import { v4 } from 'uuid';
-import { FetchResult, LaunchData } from '@berry-cloud/ngx-xapi/profiles/cmi5';
+import {
+  FetchResult,
+  Launch,
+  LaunchData,
+} from '@berry-cloud/ngx-xapi/profiles/cmi5';
+import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
+import { PlatformLocation } from '@angular/common';
 
 export const DEFAULT_STATE_ID = 'state';
 
+export const XAPI_LAUNCH = new InjectionToken<Launch | Observable<Launch>>(
+  'xapi.launch'
+);
+
+export const XAPI_ACTIVITY = new InjectionToken<
+  Activity | Observable<Activity>
+>('xapi.activity');
+
+@Injectable({
+  providedIn: 'root',
+})
 export class XapiCourseService {
-  public client?: ReplaySubject<XapiClient>;
+  public client: ReplaySubject<XapiClient | undefined>;
   private course?: Activity;
   private contextTemplate?: Context;
 
+  private launch?: Launch;
   private launchData?: LaunchData;
 
   constructor(
     private httpClient: HttpClient,
-    endpoint?: string,
-    authorization?: string,
-    private agent?: Agent,
-    private activityId?: string,
-    private registration?: string,
-    fetch?: string
+    @Inject(XAPI_ACTIVITY)
+    activity: Activity | Observable<Activity>,
+    @Optional()
+    @Inject(XAPI_LAUNCH)
+    launchParameters?: Launch | Observable<Launch> | null,
+    @Optional()
+    platformLocation?: PlatformLocation
   ) {
-    if (endpoint && agent && activityId && (authorization || fetch)) {
-      this.course = {
-        id: activityId,
-      };
-      this.client = new ReplaySubject<XapiClient>(1);
-      if (fetch) {
-        // fetch authorization from the LMS
-        fetchCmi5Authorization(httpClient, fetch!)
-          .pipe(
-            // create a client from the authorization token
-            map(
-              (authorization: string) =>
-                new XapiClient(this.httpClient, {
-                  endpoint,
-                  authorization,
-                })
-            ),
-            // load cmi5 launch data
-            mergeMap((client: XapiClient) =>
-              this.getCmi5launchData(client).pipe(
-                map((launchData: LaunchData) => {
-                  this.launchData = launchData;
-                  this.contextTemplate = launchData.contextTemplate;
-                  return client;
-                })
-              )
-            ),
-            // send cmi5 initialized statement
-            mergeMap((client: XapiClient) =>
-              this.sendCmi5Initialization(client).pipe(
-                // initialize client only after the cmi5 initialized statement is sent
-                tap(() => {
-                  this.client!.next(client);
-                })
-              )
-            )
-          )
-          // All subsequent observables come from httpClient, so they terminate automatically
-          .subscribe();
-      } else if (authorization) {
-        // initialize only if all required parameters are provided
-        this.client!.next(
-          new XapiClient(this.httpClient, {
-            endpoint,
-            authorization,
-          })
-        );
-      }
-      this.client!.complete();
-    } else if (endpoint || agent || activityId || authorization || fetch) {
-      throw new Error(
-        'Cannot initialize XapiCourseService. Missing required launch parameters.'
-      );
+    this.client = new ReplaySubject<XapiClient | undefined>(1);
+
+    var launch$: Observable<Launch>;
+    var activity$: Observable<Activity>;
+
+    if (activity instanceof Observable) {
+      activity$ = activity;
+    } else {
+      activity$ = of(activity);
     }
-    // If NONE of the launch parameters are provided,
-    // we assume that the service is used for testing purposes,
-    // (eg. was launched manually from the browser)
-    // or was launched from a non-cmi5/non-xapi LMS.
-    // In this case, the service will not get/send any statements or states.
+
+    if (launchParameters) {
+      if (launchParameters instanceof Observable) {
+        launch$ = launchParameters;
+      } else {
+        launch$ = of(launchParameters);
+      }
+    } else if (platformLocation?.search) {
+      const params = new URLSearchParams(platformLocation.search);
+      launch$ = of({
+        endpoint: params.get('endpoint'),
+        auth: params.get('auth'),
+        actor: params.get('actor') && JSON.parse(params.get('actor')!),
+        activityId: params.get('activityId'),
+        registration: params.get('registration'),
+        fetch: params.get('fetch'),
+      } as Launch);
+    } else {
+      launch$ = of({} as Launch);
+    }
+
+    forkJoin([activity$, launch$])
+      .pipe(
+        mergeMap(([activity, launch]) => {
+          this.course = {
+            ...activity,
+          };
+          if (launch.activityId) {
+            this.course.id = launch.activityId;
+          }
+          if (
+            launch.endpoint &&
+            launch.actor &&
+            (launch.auth || launch.fetch)
+          ) {
+            this.launch = launch;
+
+            if (launch.fetch) {
+              // fetch authorization from the LMS
+              return fetchCmi5Authorization(httpClient, launch.fetch!).pipe(
+                // create a client from the authorization token
+                map(
+                  (authorization: string) =>
+                    new XapiClient(this.httpClient, {
+                      endpoint: launch.endpoint,
+                      authorization,
+                    })
+                ),
+                // load cmi5 launch data
+                mergeMap((client: XapiClient) =>
+                  this.getCmi5launchData(client).pipe(
+                    map((launchData: LaunchData) => {
+                      this.launchData = launchData;
+                      this.contextTemplate = launchData.contextTemplate;
+                      return client;
+                    })
+                  )
+                ),
+                // send cmi5 initialized statement
+                mergeMap((client: XapiClient) =>
+                  this.sendCmi5Initialization(client).pipe(
+                    // initialize client only after the cmi5 initialized statement is sent
+                    tap(() => {
+                      this.client!.next(client);
+                      this.client!.complete();
+                    })
+                  )
+                )
+              );
+            } else if (launch.auth) {
+              // initialize only if all required parameters are provided
+              this.client!.next(
+                new XapiClient(this.httpClient, {
+                  endpoint: launch.endpoint,
+                  authorization: launch.auth,
+                })
+              );
+              this.client!.complete();
+            }
+            return of(undefined);
+          } else if (
+            launch.endpoint ||
+            launch.actor ||
+            launch.auth ||
+            launch.fetch
+          ) {
+            throw new Error(
+              'Cannot initialize XapiCourseService. Missing required launch parameters.'
+            );
+          } else {
+            // If NO launch parameters are provided,
+            // we assume that the service is used for testing purposes,
+            // (eg. was launched manually from the browser)
+            // or was launched from a non-cmi5/non-xapi LMS.
+            // In this case, the service will not get/send any statements or states.
+            this.client.next(undefined);
+            this.client.complete();
+            return of(undefined);
+          }
+        }),
+        catchError((error) => {
+          // In case of error, the client will not be initialized.
+          // This means that the service will not get/send any statements or states.
+          // But otherwise it will work normally.
+          this.client.next(undefined);
+          this.client.complete();
+          // We rethrow the error so that the app can handle it.
+          throw error;
+        }),
+        take(1)
+      )
+      .subscribe();
   }
 
   private getCmi5launchData(client: XapiClient): Observable<LaunchData> {
     return client
       .getState<LaunchData>({
-        activityId: this.activityId!,
-        agent: this.agent!,
-        registration: this.registration,
+        activityId: this.course!.id,
+        agent: this.launch!.actor!,
+        registration: this.launch!.registration,
         stateId: 'LMS.LaunchData',
       })
       .pipe(
@@ -131,103 +215,129 @@ export class XapiCourseService {
     return client.postStatement(this.fillStatement({ verb: initialized }));
   }
 
-  setCourseDefinition(courseDefinition: ActivityDefinition) {
-    if (this.course) {
-      this.course.definition = courseDefinition;
-    }
-  }
-
-  getXapiClient() {
+  getXapiClient(): Observable<XapiClient | undefined> {
     return this.client;
   }
 
-  getLaunchData() {
+  getCmi5LaunchData() {
     return this.launchData;
   }
 
   getState<T>(stateId: string) {
-    if (this.client) {
-      return this.client.pipe(
-        mergeMap((client: XapiClient) =>
-          client.getState<T>({
-            activityId: this.activityId!,
-            agent: this.agent!,
-            registration: this.registration,
-            stateId,
-          })
-        )
-      );
-    } else {
-      // return not found if the client is not initialized
-      // (no launch parameters were provided)
-      return of(new HttpResponse<T>({ body: null, status: 404 }));
-    }
+    return this.client.pipe(
+      mergeMap((client) =>
+        client
+          ? client.getState<T>({
+              activityId: this.launch!.activityId!,
+              agent: this.launch!.actor,
+              registration: this.launch!.registration,
+              stateId,
+            })
+          : // return not found if the client is not initialized
+            // (no launch parameters were provided)
+            of(new HttpResponse<T>({ body: null, status: 404 }))
+      )
+    );
   }
 
   postState<T>(state: T, options: StateOptions, params?: Partial<StateParams>) {
     const stateParams = this.fillStateParams(params ?? {});
-    if (this.client) {
-      return this.client.pipe(
-        mergeMap((client: XapiClient) =>
-          client.postState(state, stateParams, options)
-        )
-      );
-    } else {
-      // emulate a successful response if the client is not initialized
-      return of(new HttpResponse({ status: 204 }));
-    }
+    return this.client.pipe(
+      mergeMap((client) =>
+        client
+          ? client.postState(state, stateParams, options)
+          : of(new HttpResponse({ status: 204 }))
+      )
+    );
   }
+
   putState<T>(state: T, options: StateOptions, params?: Partial<StateParams>) {
     const stateParams = this.fillStateParams(params ?? {});
-    if (this.client) {
-      return this.client.pipe(
-        mergeMap((client: XapiClient) =>
-          client.putState(state, stateParams, options)
-        )
-      );
-    } else {
-      // emulate a successful response if the client is not initialized
-      return of(new HttpResponse({ status: 204 }));
-    }
+    return this.client.pipe(
+      mergeMap((client) =>
+        client
+          ? client.putState(state, stateParams, options)
+          : of(new HttpResponse({ status: 204 }))
+      )
+    );
   }
 
   private fillStateParams(partial: Partial<StateParams>): StateParams {
     const stateParams = { ...partial };
     if (!stateParams.activityId) {
-      stateParams.activityId = this.activityId!;
+      stateParams.activityId = this.course?.id;
     }
     if (!stateParams.agent) {
-      stateParams.agent = this.agent!;
+      stateParams.agent = this.launch?.actor;
     }
-    if (!stateParams.registration && this.registration) {
-      stateParams.registration = this.registration;
+    if (!stateParams.registration && this.launch?.registration) {
+      stateParams.registration = this.launch?.registration;
     }
     if (!stateParams.stateId) {
       stateParams.stateId = DEFAULT_STATE_ID;
     }
+
     return stateParams as StateParams;
   }
 
-  postStatement(statement: Partial<Statement>) {
-    if (this.client) {
-      return this.client.pipe(
-        mergeMap((client: XapiClient) =>
-          client.postStatement(this.fillStatement(statement))
-        )
-      );
-    } else {
-      // emulate a successful response if the client is not initialized
-      return of(new HttpResponse({ status: 200, body: v4() }));
-    }
+  /**
+   * Sends a statement to the LRS.
+   * If the client is not initialized (no launch parameters were provided),
+   * returns OK and a random uuid.
+   *
+   * @param param Either a partial statement which will be extended by the default statement,
+   * or a function that takes the default statement as a parameter and returns a partial statement.
+   * If not provided, a default statement will be sent.
+   *
+   * The default statement contains the following fields:
+   *
+   * actor: the actor from the launch parameters
+   *
+   * verb: experienced
+   *
+   * object: the XAPI_ACTIVITY + optional id from the launch parameters
+   *
+   * context: the context template from the launch parameters
+   *
+   * context.registration: the registration from the launch parameters
+   *
+   * If a partial statement is provided, the above fields will be overridden by the default statement.
+   * If a function is provided, the above fields will be overridden by the result of the function.
+   *
+   * @returns An observable of the HttpResponse from the LRS. (The body is the uuid of the statement)
+   */
+  postStatement(
+    param?: Partial<Statement> | ((defaultStatement: Statement) => Statement)
+  ): Observable<HttpResponse<string>> {
+    const verb =
+      typeof param === 'function' ? experienced : param?.verb || experienced;
+    return this.postStatementWithVerb(verb, param);
+  }
+
+  private postStatementWithVerb(
+    verb: Verb,
+    param?: Partial<Statement> | ((defaultStatement: Statement) => Statement)
+  ): Observable<HttpResponse<string>> {
+    const statement =
+      typeof param === 'function'
+        ? param(this.fillStatement({ verb }))
+        : this.fillStatement({ ...param, verb });
+
+    return this.client.pipe(
+      mergeMap((client) =>
+        client
+          ? client.postStatement(statement)
+          : // return OK and a random uuid if the client is not initialized
+            // (no launch parameters were provided)
+            of(new HttpResponse({ status: 200, body: v4() }))
+      )
+    );
   }
 
   private fillStatement(partial: Partial<Statement>): Statement {
     const statement = { ...partial };
-    if (!statement.verb) {
-      throw new Error('statement.verb is required');
-    }
     if (!statement.actor) {
-      statement.actor = this.agent;
+      statement.actor = this.launch?.actor;
     }
     if (!statement.object) {
       statement.object = this.course;
@@ -242,8 +352,8 @@ export class XapiCourseService {
         ...statement.context,
       };
     }
-    if (!statement.context.registration && this.registration) {
-      statement.context.registration = this.registration;
+    if (!statement.context.registration && this.launch?.registration) {
+      statement.context.registration = this.launch?.registration;
     }
 
     return statement as Statement;
@@ -251,9 +361,66 @@ export class XapiCourseService {
 
   /**
    * Convenience method for sending a default completed statement.
+   * @see {@link postStatement}
    */
-  sendCompletedStatement() {
-    return this.postStatement({ verb: completed });
+  sendCompletedStatement(
+    param?: Partial<Statement> | ((defaultStatement: Statement) => Statement)
+  ) {
+    return this.postStatementWithVerb(completed, param);
+  }
+
+  /**
+   * Convenience method for sending a default passed statement.
+   * @see {@link postStatement}
+   */
+  sendPassedStatement(
+    param?: Partial<Statement> | ((defaultStatement: Statement) => Statement)
+  ) {
+    return this.postStatementWithVerb(passed, param);
+  }
+
+  /**
+   * Convenience method for sending a default failed statement.
+   * @see {@link postStatement}
+   */
+  sendFailedStatement(
+    param?: Partial<Statement> | ((defaultStatement: Statement) => Statement)
+  ) {
+    return this.postStatementWithVerb(failed, param);
+  }
+
+  /**
+   * Convenience method for sending a default progressed statement.
+   * @param progress The progress value (0-100)
+   * @see {@link postStatement}
+   */
+  sendProgressedStatement(
+    progress: number,
+    param?: Partial<Statement> | ((defaultStatement: Statement) => Statement)
+  ) {
+    let statement =
+      typeof param === 'function'
+        ? param(this.fillStatement({ verb: progressed }))
+        : this.fillStatement({ ...param, verb: progressed });
+
+    statement = {
+      ...statement,
+      result: {
+        ...statement?.result,
+        extensions: {
+          ...statement?.result?.extensions,
+          'http://id.tincanapi.com/extension/progress': progress,
+        },
+      },
+    };
+
+    return this.client.pipe(
+      mergeMap((client) =>
+        client
+          ? client.postStatement(statement)
+          : of(new HttpResponse({ status: 200, body: v4() }))
+      )
+    );
   }
 }
 
@@ -262,14 +429,14 @@ export class XapiCourseService {
  *
  * @remarks
  * If this method is used, the XapiCourseService should be initialized with the returned token as an auth parameter.
- * Also note that the XapiCourseService won't send the cmi5 initialized statement automatically.
+ * Also note that the XapiCourseService won't send the cmi5 initialized statement automatically in this case.
  * Using this method is not recommended, but it can be useful if some non-common initialization is required.
  */
 export function fetchCmi5Authorization(
   httpClient: HttpClient,
   fetch: string
 ): Observable<string> {
-  return httpClient.get<FetchResult>(fetch).pipe(
+  return httpClient.post<FetchResult>(fetch, null).pipe(
     map((response) => {
       if (response['auth-token']) {
         return response['auth-token'] as string;
@@ -285,32 +452,5 @@ export function fetchCmi5Authorization(
       }
       throw new Error('Cannot fetch cmi5 authorization token.');
     })
-  );
-}
-
-/**
- * Convenience factory for creating an XapiCourseService from the launch parameters.
- * Can be used as a provider in the app-module.
- */
-export function xapiCourseServiceFactory(
-  httpClient: HttpClient,
-  activatedRoute: ActivatedRoute
-): Observable<XapiCourseService> {
-  return activatedRoute.queryParams.pipe(
-    // Theoretically the first value is always empty
-    skip(1),
-    map(
-      (params: Params) =>
-        new XapiCourseService(
-          httpClient,
-          params['endpoint'],
-          params['auth'],
-          JSON.parse(params['actor']),
-          params['activityId'],
-          params['registration'],
-          params['fetch']
-        )
-    ),
-    take(1)
   );
 }

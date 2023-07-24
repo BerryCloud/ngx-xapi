@@ -1,0 +1,27 @@
+<nav>
+  <ul>
+    <li>
+      <a
+        routerLink="/xapi-course"
+        [queryParams]="{
+          endpoint: 'https://lrs.adlnet.gov/xapi/',
+          actor: '{&quot;mbox&quot;:&quot;mailto:test@example.com&quot;}',
+          auth: 'Basic dGVzdDIzOnRlc3QyMzIz',
+          activityId: 'http://example.com'
+        }"
+        routerLinkActive="active"
+        >launch xAPI Course sample</a
+      >
+    </li>
+  </ul>
+</nav>
+
+<h1>xAPI Client Samples</h1>
+
+<post-statement></post-statement>
+
+<get-statement></get-statement>
+
+<post-state></post-state>
+
+<get-state></get-state>
