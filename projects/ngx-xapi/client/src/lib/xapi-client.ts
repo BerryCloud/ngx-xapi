@@ -700,7 +700,7 @@ export class XapiClient {
     }
 
     if (params.since) {
-      httpParams = httpParams.set('registration', params.since);
+      httpParams = httpParams.set('since', params.since);
     }
 
     if (params.stateId) {
