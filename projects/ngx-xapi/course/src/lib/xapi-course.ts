@@ -51,7 +51,7 @@ export const XAPI_ACTIVITY = new InjectionToken<
   providedIn: 'root',
 })
 export class XapiCourseService {
-  public client: ReplaySubject<XapiClient | undefined>;
+  public client = new ReplaySubject<XapiClient | undefined>(1);
   private course?: Activity;
   private contextTemplate?: Context;
 
@@ -68,36 +68,8 @@ export class XapiCourseService {
     @Optional()
     platformLocation?: PlatformLocation
   ) {
-    this.client = new ReplaySubject<XapiClient | undefined>(1);
-
-    var launch$: Observable<Launch>;
-    var activity$: Observable<Activity>;
-
-    if (activity instanceof Observable) {
-      activity$ = activity;
-    } else {
-      activity$ = of(activity);
-    }
-
-    if (launchParameters) {
-      if (launchParameters instanceof Observable) {
-        launch$ = launchParameters;
-      } else {
-        launch$ = of(launchParameters);
-      }
-    } else if (platformLocation?.search) {
-      const params = new URLSearchParams(platformLocation.search);
-      launch$ = of({
-        endpoint: params.get('endpoint'),
-        auth: params.get('auth'),
-        actor: params.get('actor') && JSON.parse(params.get('actor')!),
-        activityId: params.get('activityId'),
-        registration: params.get('registration'),
-        fetch: params.get('fetch'),
-      } as Launch);
-    } else {
-      launch$ = of({} as Launch);
-    }
+    const activity$ = this.calculateActivity(activity);
+    const launch$ = this.calculateLaunch(launchParameters, platformLocation);
 
     forkJoin([activity$, launch$])
       .pipe(
@@ -117,7 +89,7 @@ export class XapiCourseService {
 
             if (launch.fetch) {
               // fetch authorization from the LMS
-              return fetchCmi5Authorization(httpClient, launch.fetch!).pipe(
+              return fetchCmi5Authorization(httpClient, launch.fetch).pipe(
                 // create a client from the authorization token
                 map(
                   (authorization: string) =>
@@ -141,21 +113,21 @@ export class XapiCourseService {
                   this.sendCmi5Initialization(client).pipe(
                     // initialize client only after the cmi5 initialized statement is sent
                     tap(() => {
-                      this.client!.next(client);
-                      this.client!.complete();
+                      this.client.next(client);
+                      this.client.complete();
                     })
                   )
                 )
               );
             } else if (launch.auth) {
               // initialize only if all required parameters are provided
-              this.client!.next(
+              this.client.next(
                 new XapiClient(this.httpClient, {
                   endpoint: launch.endpoint,
                   authorization: launch.auth,
                 })
               );
-              this.client!.complete();
+              this.client.complete();
             }
             return of(undefined);
           } else if (
@@ -192,11 +164,42 @@ export class XapiCourseService {
       .subscribe();
   }
 
+  calculateLaunch(
+    launchParameters: Launch | Observable<Launch> | null | undefined,
+    platformLocation: PlatformLocation | undefined
+  ): Observable<Launch> {
+    if (launchParameters) {
+      if (launchParameters instanceof Observable) {
+        return launchParameters;
+      } else {
+        return of(launchParameters);
+      }
+    } else if (platformLocation?.search) {
+      const params = new URLSearchParams(platformLocation.search);
+      return of({
+        endpoint: params.get('endpoint'),
+        auth: params.get('auth'),
+        actor: params.get('actor') && JSON.parse(params.get('actor')!),
+        activityId: params.get('activityId'),
+        registration: params.get('registration'),
+        fetch: params.get('fetch'),
+      } as Launch);
+    } else {
+      return of({} as Launch);
+    }
+  }
+
+  calculateActivity(
+    activity: Activity | Observable<Activity>
+  ): Observable<Activity> {
+    return activity instanceof Observable ? activity : of(activity);
+  }
+
   private getCmi5launchData(client: XapiClient): Observable<LaunchData> {
     return client
       .getState<LaunchData>({
         activityId: this.course!.id,
-        agent: this.launch!.actor!,
+        agent: this.launch!.actor,
         registration: this.launch!.registration,
         stateId: 'LMS.LaunchData',
       })
@@ -456,7 +459,7 @@ export class XapiCourseService {
         ...statement?.result,
         extensions: {
           ...statement?.result?.extensions,
-          'http://id.tincanapi.com/extension/progress': progress,
+          'https://w3id.org/xapi/cmi5/result/extensions/progress': progress,
         },
       },
     };
@@ -528,10 +531,10 @@ export function fetchCmi5Authorization(
   return httpClient.post<FetchResult>(fetch, null).pipe(
     map((response) => {
       if (response['auth-token']) {
-        return response['auth-token'] as string;
+        return response['auth-token'];
       }
       if (response['error-text']) {
-        throw new Error(response['error-text'] as string);
+        throw new Error(response['error-text']);
       }
       if (response['error-code']) {
         throw new Error(

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { XapiCourseComponent } from './xapi-course/xapi-course.component';
-import { AppComponent } from './app.component';
 import { SamplesComponent } from './samples.component';
 
 const routes: Routes = [
