@@ -28,8 +28,9 @@ import { Activity } from '@berry-cloud/ngx-xapi/model';
     {
       provide: XAPI_CONFIG,
       useValue: {
+        // You can create a free account here for testing
         endpoint: 'https://lrs.adlnet.gov/xapi/',
-        authorization: 'Basic dGVzdDIzOnRlc3QyMzIz',
+        authorization: 'Basic ***************',
       } as XapiConfig,
     },
     {
