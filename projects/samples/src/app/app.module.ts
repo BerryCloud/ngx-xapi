@@ -1,8 +1,6 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { HttpClientModule } from '@angular/common/http';
-import { Activity, XAPI_CONFIG, XapiConfig } from '@berry-cloud/ngx-xapi';
 import { AppComponent } from './app.component';
 import { GetStateComponent } from './get-state/get-state.component';
 import { GetStatementComponent } from './get-statement/get-statement.component';
@@ -12,6 +10,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { SamplesComponent } from './samples.component';
 import { XapiCourseComponent } from './xapi-course/xapi-course.component';
 import { XAPI_ACTIVITY } from '@berry-cloud/ngx-xapi/course';
+import { XAPI_CONFIG, XapiConfig } from '@berry-cloud/ngx-xapi/client';
+import { Activity } from '@berry-cloud/ngx-xapi/model';
 
 @NgModule({
   declarations: [

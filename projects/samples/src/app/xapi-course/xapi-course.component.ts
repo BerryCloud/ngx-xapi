@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Statement, answered, experienced } from '@berry-cloud/ngx-xapi';
+import { Statement, answered, experienced } from '@berry-cloud/ngx-xapi/model';
 import { XapiCourseService } from '@berry-cloud/ngx-xapi/course';
 import { Observable } from 'rxjs';
 
