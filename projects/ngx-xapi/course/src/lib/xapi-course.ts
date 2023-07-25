@@ -224,12 +224,11 @@ export class XapiCourseService {
     return this.launchData;
   }
 
-  getState<T>(stateId?: string) {
-    const stateParams = this.fillStateParams({ stateId });
+  getState<T>(params?: Partial<StateParams>) {
     return this.client.pipe(
       mergeMap((client) =>
         client
-          ? client.getState<T>(stateParams)
+          ? client.getState<T>(this.fillStateParams(params))
           : // return not found if the client is not initialized
             // (no launch parameters were provided)
             of(new HttpResponse<T>({ body: null, status: 404 }))
@@ -237,23 +236,33 @@ export class XapiCourseService {
     );
   }
 
-  postState<T>(state: T, options: StateOptions, params?: Partial<StateParams>) {
-    const stateParams = this.fillStateParams(params);
+  postState<T>(
+    state: T,
+    params?: Partial<StateParams>,
+    options?: StateOptions
+  ) {
     return this.client.pipe(
       mergeMap((client) =>
         client
-          ? client.postState(state, stateParams, options)
+          ? client.postState(
+              state,
+              this.fillStateParams(params),
+              options || { contentType: 'application/json' }
+            )
           : of(new HttpResponse({ status: 204 }))
       )
     );
   }
 
-  putState<T>(state: T, options: StateOptions, params?: Partial<StateParams>) {
-    const stateParams = this.fillStateParams(params);
+  putState<T>(state: T, params?: Partial<StateParams>, options?: StateOptions) {
     return this.client.pipe(
       mergeMap((client) =>
         client
-          ? client.putState(state, stateParams, options)
+          ? client.putState(
+              state,
+              this.fillStateParams(params),
+              options || { contentType: 'application/json' }
+            )
           : of(new HttpResponse({ status: 204 }))
       )
     );
@@ -468,12 +477,19 @@ export class XapiCourseService {
    */
   sendScoredStatement(
     score: number,
+    scaled?: number,
     param?: Partial<Statement> | ((defaultStatement: Statement) => Statement)
   ) {
     let statement =
       typeof param === 'function'
         ? param(this.fillStatement(scored))
         : this.fillStatement(scored, param);
+
+    const calculatedScaled =
+      statement?.result?.score?.min && statement?.result?.score?.max
+        ? (score - statement.result.score.min) /
+          (statement.result.score.max - statement.result.score.min)
+        : undefined;
 
     statement = {
       ...statement,
@@ -482,7 +498,7 @@ export class XapiCourseService {
         score: {
           ...statement?.result?.score,
           raw: score,
-          scaled: score / 100,
+          scaled: scaled || calculatedScaled,
         },
       },
     };

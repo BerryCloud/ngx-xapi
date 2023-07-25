@@ -300,6 +300,149 @@ If neither of the above initialization methods are suitable, you can create the 
 ```
 
 The `XapiCourse` uses the `XapiClient` internally, but extends it functionality with some useful convenient methods. If these methods don't fit for usecase you can still get an `Observable<XapiClient | undefined>` via the `getXapiClient()` method.
-It is `undefined` if the launch parameters were not provided or were deficient.
+It is `undefined` if the launch parameters were not provided or were deficient. See the `XapiClient` examples above.
 
-## Sending State
+## Sending a State
+
+After the `XapiCourse` was successfully initialized, you can send a state with the `putState` or `postState` method. It has only one mandatory argument, the state to be sent. All parameters needed for the LRS request are filled or defaulted in by the `XapiCourse`.
+
+default stateId: `progress`
+
+default content-type: `application/json`
+
+If you want to use different `stateId` or send a state with any other properties, you can override any of the defaults:
+
+```TypeScript
+this.courseService.putState(
+  state,
+  {
+    stateId: 'sample-state',
+    activityId: 'http://example.com/activities/sample-activity',
+    registration: '123456789-1234-1234-1234-123456789012',
+    agent: {
+      mbox: 'mailto:test@example.com',
+    },
+  },
+  {
+    contentType: 'application/json',
+    etag: '"123456789012345678901234567890123456789012"',
+    match: true
+  }
+).subscribe( ... );
+```
+
+## Getting a State
+
+The same way as above you can use the `getState` method. Without any arguments it will try to get the state by the default parameters, but you can override any of them:
+
+```TypeScript
+this.xapiCourse.getState(
+  {
+    stateId: 'sample-state',
+    activityId: 'http://example.com/activities/sample-activity',
+    registration: '123456789-1234-1234-1234-123456789012',
+    agent: {
+      mbox: 'mailto:test@example.com',
+    },
+  }
+).subscribe( ... );
+```
+
+## Sending a Statement
+
+You can send a default statement using the `postStatement` method:
+
+```TypeScript
+this.xapiCourse.postStatement();
+```
+
+The deafault verb is `experienced`, the actor, object and registration properties are picked up from the launch parameters.
+You can provide a `Partial<Statement>` argument to the `postStatement` method where you can override any of these parameters:
+
+```TypeScript
+this.courseService.postStatement(
+  {
+    verb: experienced,
+    object: {
+      id: 'http://example.com/activities/sample-activity',
+      definition: {
+        name: {
+          'en-US': 'Sample Activity',
+        },
+      },
+    },
+    actor: {
+      mbox: 'mailto:other@example.com',
+    },
+    context: {
+      registration: '00000000-0000-0000-0000-000000000000',
+      language: 'en-US',
+      extensions: {
+        'http://example.com/profiles/meetings/context/extensions/meeting-id':
+          '123456789',
+        'http://example.com/profiles/meetings/context/extensions/meeting-name':
+          'Example Meeting',
+      }
+    },
+  }
+)
+```
+
+If the `XapiCourse` was initialized as a cmi5 course, then the properties from cmi5 `contextTemplate` are also added to the `Statement`. The mandatory parameters from the `contextTemplate` cannot be overridden. (these are the sessionId extension and the contextActivities arrays)
+If you want full control over the `Statement`, you can configure it via a callback method. The incoming `defaultStatement` argument contains the prefilled Statement, but you can override any or all of the properties. (Do it only if you **really know** what are you doing)
+
+```TypeScript
+this.courseService.postStatement(
+  (defaultStatement) =>
+    ({
+      ...defaultStatement,
+      verb: attempted,
+      context: {
+        contextActivities: {
+          grouping: [
+            {
+              id: 'http://example.com/activities/world-domination',
+              definition: {
+                name: {
+                  'en-US': 'Nothing to see here',
+                },
+              },
+            },
+          ],
+          parent: undefined
+        },
+        extensions: undefined
+      },
+    } as Statement)
+);
+```
+
+## Convenience methods for sending Statements
+
+You can use the following method for sending the most common tincan or cmi5 statements. All of them can be used with an extra statement-template or a callback method argument, like the `postStatement` method above:
+
+```TypeScript
+sendCompletedStatement();
+sendPassedStatement();
+sendFailedStatement();
+sendProgressedStatement(progressValue);
+sendScoredStatement(scoreValue, scaledValue);
+```
+
+In the latter methods the progress and score values are merged into the statement after the callback method was used.
+
+eg. sending a score for a test which ha its own activity:
+
+```TypeScript
+// For an IQ test, the scaled score is not applicable, so we send undefined
+this.courseService.sendScoredStatement(152, undefined, {
+  object: {
+    id: 'http://example.com/activities/iq-test',
+    definition: {
+      name: {
+        'en-US': 'IQ Test',
+      },
+    },
+  },
+});
+```
