@@ -250,7 +250,7 @@ export class XapiCourseService {
           ? client.postState(
               state,
               this.fillStateParams(params),
-              options || { contentType: 'application/json' }
+              options ?? { contentType: 'application/json' }
             )
           : of(new HttpResponse({ status: 204 }))
       )
@@ -264,7 +264,7 @@ export class XapiCourseService {
           ? client.putState(
               state,
               this.fillStateParams(params),
-              options || { contentType: 'application/json' }
+              options ?? { contentType: 'application/json' }
             )
           : of(new HttpResponse({ status: 204 }))
       )
@@ -501,7 +501,7 @@ export class XapiCourseService {
         score: {
           ...statement?.result?.score,
           raw: score,
-          scaled: scaled || calculatedScaled,
+          scaled: scaled ?? calculatedScaled,
         },
       },
     };
