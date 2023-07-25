@@ -10,6 +10,7 @@ import {
   initialized,
   passed,
   progressed,
+  scored,
 } from '@berry-cloud/ngx-xapi/model';
 import {
   XapiClient,
@@ -212,7 +213,7 @@ export class XapiCourseService {
   private sendCmi5Initialization(
     client: XapiClient
   ): Observable<HttpResponse<any>> {
-    return client.postStatement(this.fillStatement({ verb: initialized }));
+    return client.postStatement(this.fillStatement(initialized));
   }
 
   getXapiClient(): Observable<XapiClient | undefined> {
@@ -301,17 +302,21 @@ export class XapiCourseService {
    *
    * context.registration: the registration from the launch parameters
    *
-   * If a partial statement is provided, the above fields will be overridden by the default statement.
-   * If a function is provided, the above fields will be overridden by the result of the function.
+   * @remarks Beware! If you use a callback function, you can override the mandatory properties
+   * come from the cmi5 context template or launch parameters.
+   * (eg. registration, contextActivities, extensions  etc.)
+   * In common scenarios, this is a bad practice. However, it can be useful in some cases.
+   * (eg. if you want to send a statement about a side effect with a different properties
+   * than the cmi5 context template or launch parameters provide for the main statement)
+   *
+   * If you use a partial statement, these mandatory properties will be merged with the partial statement.
    *
    * @returns An observable of the HttpResponse from the LRS. (The body is the uuid of the statement)
    */
   postStatement(
     param?: Partial<Statement> | ((defaultStatement: Statement) => Statement)
   ): Observable<HttpResponse<string>> {
-    const verb =
-      typeof param === 'function' ? experienced : param?.verb || experienced;
-    return this.postStatementWithVerb(verb, param);
+    return this.postStatementWithVerb(experienced, param);
   }
 
   private postStatementWithVerb(
@@ -320,8 +325,8 @@ export class XapiCourseService {
   ): Observable<HttpResponse<string>> {
     const statement =
       typeof param === 'function'
-        ? param(this.fillStatement({ verb }))
-        : this.fillStatement({ ...param, verb });
+        ? param(this.fillStatement(verb))
+        : this.fillStatement(verb, param);
 
     return this.client.pipe(
       mergeMap((client) =>
@@ -334,26 +339,69 @@ export class XapiCourseService {
     );
   }
 
-  private fillStatement(partial: Partial<Statement>): Statement {
-    const statement = { ...partial };
-    if (!statement.actor) {
-      statement.actor = this.launch?.actor;
-    }
-    if (!statement.object) {
-      statement.object = this.course;
-    }
-    if (!statement.context) {
-      statement.context = this.contextTemplate ?? {};
-    } else {
-      // merge context template with the provided context
-      // TODO: this is not a deep merge
-      statement.context = {
-        ...this.contextTemplate,
-        ...statement.context,
-      };
-    }
-    if (!statement.context.registration && this.launch?.registration) {
-      statement.context.registration = this.launch?.registration;
+  private fillStatement(verb: Verb, partial?: Partial<Statement>): Statement {
+    const statement = {
+      ...partial,
+      ...(!partial?.actor && { actor: this.launch?.actor }),
+      ...(!partial?.verb && { verb }),
+      ...(!partial?.object && { object: this.course }),
+    };
+
+    if (this.contextTemplate || this.launch?.registration) {
+      // if context template or registration is provided, we need to add a context
+      if (!partial?.context) {
+        statement.context = {
+          ...this.contextTemplate,
+          registration: this.launch?.registration,
+        };
+      } else {
+        // merge context template with the provided context
+        statement.context = {
+          ...partial.context,
+          ...this.contextTemplate,
+          registration: this.launch?.registration,
+          ...(partial.context.extensions && {
+            extensions: {
+              ...partial.context?.extensions,
+              ...this.contextTemplate?.extensions,
+            },
+          }),
+          ...(partial.context.contextActivities && {
+            contextActivities: {
+              ...partial.context.contextActivities,
+              ...this.contextTemplate?.contextActivities,
+              ...(partial.context.contextActivities.category &&
+                this.contextTemplate?.contextActivities?.category && {
+                  category: [
+                    ...partial.context.contextActivities.category,
+                    ...this.contextTemplate.contextActivities.category,
+                  ],
+                }),
+              ...(partial.context.contextActivities.parent &&
+                this.contextTemplate?.contextActivities?.parent && {
+                  parent: [
+                    ...partial.context.contextActivities.parent,
+                    ...this.contextTemplate.contextActivities.parent,
+                  ],
+                }),
+              ...(partial.context.contextActivities.grouping &&
+                this.contextTemplate?.contextActivities?.grouping && {
+                  grouping: [
+                    ...partial.context.contextActivities.grouping,
+                    ...this.contextTemplate.contextActivities.grouping,
+                  ],
+                }),
+              ...(partial.context.contextActivities.other &&
+                this.contextTemplate?.contextActivities?.other && {
+                  other: [
+                    ...partial.context.contextActivities.other,
+                    ...this.contextTemplate.contextActivities.other,
+                  ],
+                }),
+            },
+          }),
+        };
+      }
     }
 
     return statement as Statement;
@@ -400,8 +448,8 @@ export class XapiCourseService {
   ) {
     let statement =
       typeof param === 'function'
-        ? param(this.fillStatement({ verb: progressed }))
-        : this.fillStatement({ ...param, verb: progressed });
+        ? param(this.fillStatement(progressed))
+        : this.fillStatement(progressed, param);
 
     statement = {
       ...statement,
@@ -410,6 +458,41 @@ export class XapiCourseService {
         extensions: {
           ...statement?.result?.extensions,
           'http://id.tincanapi.com/extension/progress': progress,
+        },
+      },
+    };
+
+    return this.client.pipe(
+      mergeMap((client) =>
+        client
+          ? client.postStatement(statement)
+          : of(new HttpResponse({ status: 200, body: v4() }))
+      )
+    );
+  }
+
+  /**
+   * Convenience method for sending a default scored statement.
+   * @param score The score value (0-100)
+   * @see {@link postStatement}
+   */
+  sendScoredStatement(
+    score: number,
+    param?: Partial<Statement> | ((defaultStatement: Statement) => Statement)
+  ) {
+    let statement =
+      typeof param === 'function'
+        ? param(this.fillStatement(scored))
+        : this.fillStatement(scored, param);
+
+    statement = {
+      ...statement,
+      result: {
+        ...statement?.result,
+        score: {
+          ...statement?.result?.score,
+          raw: score,
+          scaled: score / 100,
         },
       },
     };
