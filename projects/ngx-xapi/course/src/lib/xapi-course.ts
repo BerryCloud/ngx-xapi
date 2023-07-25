@@ -224,16 +224,12 @@ export class XapiCourseService {
     return this.launchData;
   }
 
-  getState<T>(stateId: string) {
+  getState<T>(stateId?: string) {
+    const stateParams = this.fillStateParams({ stateId });
     return this.client.pipe(
       mergeMap((client) =>
         client
-          ? client.getState<T>({
-              activityId: this.launch!.activityId!,
-              agent: this.launch!.actor,
-              registration: this.launch!.registration,
-              stateId,
-            })
+          ? client.getState<T>(stateParams)
           : // return not found if the client is not initialized
             // (no launch parameters were provided)
             of(new HttpResponse<T>({ body: null, status: 404 }))
@@ -242,7 +238,7 @@ export class XapiCourseService {
   }
 
   postState<T>(state: T, options: StateOptions, params?: Partial<StateParams>) {
-    const stateParams = this.fillStateParams(params ?? {});
+    const stateParams = this.fillStateParams(params);
     return this.client.pipe(
       mergeMap((client) =>
         client
@@ -253,7 +249,7 @@ export class XapiCourseService {
   }
 
   putState<T>(state: T, options: StateOptions, params?: Partial<StateParams>) {
-    const stateParams = this.fillStateParams(params ?? {});
+    const stateParams = this.fillStateParams(params);
     return this.client.pipe(
       mergeMap((client) =>
         client
@@ -263,22 +259,16 @@ export class XapiCourseService {
     );
   }
 
-  private fillStateParams(partial: Partial<StateParams>): StateParams {
-    const stateParams = { ...partial };
-    if (!stateParams.activityId) {
-      stateParams.activityId = this.course?.id;
-    }
-    if (!stateParams.agent) {
-      stateParams.agent = this.launch?.actor;
-    }
-    if (!stateParams.registration && this.launch?.registration) {
-      stateParams.registration = this.launch?.registration;
-    }
-    if (!stateParams.stateId) {
-      stateParams.stateId = DEFAULT_STATE_ID;
-    }
-
-    return stateParams as StateParams;
+  private fillStateParams(partial?: Partial<StateParams>): StateParams {
+    return {
+      ...partial,
+      ...(!partial?.activityId && { activityId: this.course?.id }),
+      ...(!partial?.agent && { agent: this.launch?.actor }),
+      ...(!partial?.registration && {
+        registration: this.launch?.registration,
+      }),
+      ...(!partial?.stateId && { stateId: DEFAULT_STATE_ID }),
+    } as StateParams;
   }
 
   /**
