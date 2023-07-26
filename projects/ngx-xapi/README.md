@@ -299,7 +299,7 @@ If it's ignored then the course will still run, but it will silently ignore any 
 If neither of the above initialization methods are suitable, you can create the `XapiCourseService` manually:
 
 ```
-  const course = new XapiCourseService(activity, launch);
+  const courseService = new XapiCourseService(activity, launch);
 ```
 
 The `XapiCourseService` uses the `XapiClient` internally, but extends its functionality with some useful convenience functions.
