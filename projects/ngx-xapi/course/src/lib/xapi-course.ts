@@ -242,30 +242,32 @@ export class XapiCourseService {
   postState<T>(
     state: T,
     params?: Partial<StateParams>,
-    options?: StateOptions
+    options?: Partial<StateOptions>
   ) {
     return this.client.pipe(
       mergeMap((client) =>
         client
-          ? client.postState(
-              state,
-              this.fillStateParams(params),
-              options ?? { contentType: 'application/json' }
-            )
+          ? client.postState(state, this.fillStateParams(params), {
+              ...options,
+              contentType: options?.contentType ?? 'application/json',
+            })
           : of(new HttpResponse({ status: 204 }))
       )
     );
   }
 
-  putState<T>(state: T, params?: Partial<StateParams>, options?: StateOptions) {
+  putState<T>(
+    state: T,
+    params?: Partial<StateParams>,
+    options?: Partial<StateOptions>
+  ) {
     return this.client.pipe(
       mergeMap((client) =>
         client
-          ? client.putState(
-              state,
-              this.fillStateParams(params),
-              options ?? { contentType: 'application/json' }
-            )
+          ? client.putState(state, this.fillStateParams(params), {
+              ...options,
+              contentType: options?.contentType ?? 'application/json',
+            })
           : of(new HttpResponse({ status: 204 }))
       )
     );
