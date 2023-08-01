@@ -14,18 +14,17 @@ body:
     attributes:
       label: Summary
       description: A clear and concise description of what the bug is.
-      placeholder: When I click on the button, the video doesn't play
+      placeholder: Posting a statement fails with a 400 error
     validations:
       required: true
   - type: textarea
     id: steps-to-reproduce
     attributes:
       label: Steps to reproduce
-      description: Steps to reproduce the behavior
-      placeholder: |
-        1. Go to '...'
-        2. Click on '....'
-        3. Scroll down to '....'
+      description: |
+        Steps to reproduce the behavior
+
+        A unit test or example would be very helpful.
     validations:
       required: true
   - type: textarea
@@ -33,7 +32,7 @@ body:
     attributes:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen.
-      placeholder: On clicking the button, the video should play
+      placeholder: The statement is successfully posted with a 201 response status code
     validations:
       required: true
   - type: textarea
@@ -41,7 +40,7 @@ body:
     attributes:
       label: Actual behavior
       description: A clear and concise description of what actually happens.
-      placeholder: On clicking the button, nothing happens
+      placeholder: The statement is not posted and a 400 response status code is returned
     validations:
       required: true
   - type: textarea
