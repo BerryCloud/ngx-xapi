@@ -1,0 +1,66 @@
+name: Bug Report
+description: Create a bug report to help us improve
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees:
+  - knoake
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: A clear and concise description of what the bug is.
+      placeholder: When I click on the button, the video doesn't play
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: On clicking the button, the video should play
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: A clear and concise description of what actually happens.
+      placeholder: On clicking the button, nothing happens
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Notes
+      description: Any additional information that might be useful
+      placeholder: Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in.
+    validations:
+      required: false
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      description: What version of our software are you running?
+      options:
+        - 1.x
+        - 2.x
+        - 3.x
+        - 4.x
+        - 5.x
+    validations:
+      required: true
