@@ -1,7 +1,7 @@
 import { Extensions } from './extensions';
 import { LanguageMap } from './language-map';
 
-type InteractionType =
+export type InteractionType =
   | 'true-false'
   | 'choice'
   | 'fill-in'
