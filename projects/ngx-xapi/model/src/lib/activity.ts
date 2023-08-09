@@ -1,6 +1,18 @@
 import { Extensions } from './extensions';
 import { LanguageMap } from './language-map';
 
+type InteractionType =
+  | 'true-false'
+  | 'choice'
+  | 'fill-in'
+  | 'long-fill-in'
+  | 'matching'
+  | 'performance'
+  | 'sequencing'
+  | 'likert'
+  | 'numeric'
+  | 'other';
+
 /**
  * This interface represents the xAPI Activity Definition object.
  *
@@ -39,7 +51,7 @@ export interface ActivityDefinition {
   /**
    * The type of interaction.
    */
-  interactionType?: string;
+  interactionType?: InteractionType;
 
   /**
    * A pattern representing the correct response to the interaction. The structure of this pattern
