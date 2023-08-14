@@ -28,6 +28,7 @@ import {
   ActivityProfileParams,
   ActivityProfilesParams,
 } from './activity-profile-params';
+import { DeleteStateOptions, StateOptions } from './state-options';
 
 export interface XapiConfig {
   endpoint: string;
@@ -110,7 +111,7 @@ export class XapiClient {
   putState(
     object: any,
     stateParams: StateParams,
-    options: { contentType: string; etag?: string; match?: boolean }
+    options: StateOptions
   ): Observable<HttpResponse<object>> {
     return this.config$.pipe(
       mergeMap((config) => {
@@ -134,7 +135,7 @@ export class XapiClient {
   postState(
     object: any,
     stateParams: StateParams,
-    options: { contentType: string; etag?: string; match?: boolean }
+    options: StateOptions
   ): Observable<HttpResponse<object>> {
     return this.config$.pipe(
       mergeMap((config) => {
@@ -159,7 +160,7 @@ export class XapiClient {
    */
   deleteState(
     stateParams: StateParams,
-    options: { etag?: string; match?: boolean }
+    options: DeleteStateOptions
   ): Observable<HttpResponse<object>> {
     return this.config$.pipe(
       mergeMap((config) => {
@@ -183,7 +184,7 @@ export class XapiClient {
    */
   deleteStates(
     statesParams: DeleteStatesParams,
-    options: { etag?: string; match?: boolean }
+    options: DeleteStateOptions
   ): Observable<HttpResponse<object>> {
     return this.config$.pipe(
       mergeMap((config) => {
@@ -699,7 +700,7 @@ export class XapiClient {
     }
 
     if (params.since) {
-      httpParams = httpParams.set('registration', params.since);
+      httpParams = httpParams.set('since', params.since);
     }
 
     if (params.stateId) {

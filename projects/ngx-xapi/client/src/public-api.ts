@@ -13,4 +13,5 @@ export {
   GetStatesParams,
   DeleteStatesParams,
 } from './lib/state-params';
+export * from './lib/state-options';
 export * from './lib/statements-params';
