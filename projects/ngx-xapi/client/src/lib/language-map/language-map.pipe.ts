@@ -66,7 +66,7 @@ export class LanguageMapPipe implements PipeTransform {
       for (const lm of parameter) {
         text += this.transform(lm);
       }
-    } else if (!!this.lmLocale) {
+    } else if (this.lmLocale) {
       text = formatLanguageMap(parameter, this.lmLocale);
     } else {
       text = formatLanguageMap(parameter, this.locale);
