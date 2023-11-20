@@ -1,6 +1,18 @@
-import { Inject, LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
+import {
+  Inject,
+  InjectionToken,
+  LOCALE_ID,
+  Optional,
+  Pipe,
+  PipeTransform,
+} from '@angular/core';
 import { LanguageMap } from '@berry-cloud/ngx-xapi/model';
 import { formatLanguageMap } from './format-language-map';
+
+/**
+ * An optional injection token to override the default angular LOCALE_ID used by the language map pipe.
+ */
+export declare const LANGUAGE_MAP_LOCALE_ID: InjectionToken<string>;
 
 /**
  * This pipe transforms the parameter (potentially a language map) into a string.
@@ -31,7 +43,10 @@ import { formatLanguageMap } from './format-language-map';
   name: 'languageMap',
 })
 export class LanguageMapPipe implements PipeTransform {
-  constructor(@Inject(LOCALE_ID) private locale: string) {}
+  constructor(
+    @Inject(LOCALE_ID) private locale: string,
+    @Optional() @Inject(LANGUAGE_MAP_LOCALE_ID) private lmLocale?: string
+  ) {}
 
   transform(
     parameter: string | LanguageMap | (string | LanguageMap)[] | undefined,
@@ -51,6 +66,8 @@ export class LanguageMapPipe implements PipeTransform {
       for (const lm of parameter) {
         text += this.transform(lm);
       }
+    } else if (!!this.lmLocale) {
+      text = formatLanguageMap(parameter, this.lmLocale);
     } else {
       text = formatLanguageMap(parameter, this.locale);
     }
