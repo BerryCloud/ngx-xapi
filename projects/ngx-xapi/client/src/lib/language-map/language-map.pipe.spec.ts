@@ -15,31 +15,57 @@ describe('LanguageMapPipe', () => {
 
       expect(pipe.transform(languageMap)).toBe('color');
     });
-  }),
-    describe('Given instance with en-GB locale', () => {
-      const pipe = new LanguageMapPipe('en-GB');
+  });
+  describe('Given instance with en-GB locale', () => {
+    const pipe = new LanguageMapPipe('en-GB');
 
-      it('result is color', () => {
-        const languageMap: LanguageMap = { 'en-US': 'color' };
+    it('result is color', () => {
+      const languageMap: LanguageMap = { 'en-US': 'color' };
 
-        expect(pipe.transform(languageMap)).toBe('color');
-      });
-
-      it('result is colour', () => {
-        const languageMap: LanguageMap = {
-          'en-US': 'color',
-          'en-GB': 'colour',
-        };
-
-        expect(pipe.transform(languageMap)).toBe('colour');
-      });
-
-      it('result is null', () => {
-        expect(pipe.transform(undefined)).toBeNull();
-      });
-
-      it('result is null', () => {
-        expect(pipe.transform({})).toBeNull();
-      });
+      expect(pipe.transform(languageMap)).toBe('color');
     });
+
+    it('result is colour', () => {
+      const languageMap: LanguageMap = {
+        'en-US': 'color',
+        'en-GB': 'colour',
+      };
+
+      expect(pipe.transform(languageMap)).toBe('colour');
+    });
+
+    it('result is null', () => {
+      expect(pipe.transform(undefined)).toBeNull();
+    });
+
+    it('result is null', () => {
+      expect(pipe.transform({})).toBeNull();
+    });
+  });
+  describe('Given instance with en-US locale AND en-GB optional locale', () => {
+    const pipe = new LanguageMapPipe('en-US', 'en-GB');
+
+    it('result is color', () => {
+      const languageMap: LanguageMap = { 'en-US': 'color' };
+
+      expect(pipe.transform(languageMap)).toBe('color');
+    });
+
+    it('result is colour', () => {
+      const languageMap: LanguageMap = {
+        'en-US': 'color',
+        'en-GB': 'colour',
+      };
+
+      expect(pipe.transform(languageMap)).toBe('colour');
+    });
+
+    it('result is null', () => {
+      expect(pipe.transform(undefined)).toBeNull();
+    });
+
+    it('result is null', () => {
+      expect(pipe.transform({})).toBeNull();
+    });
+  });
 });
