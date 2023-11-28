@@ -12,7 +12,9 @@ import { formatLanguageMap } from './format-language-map';
 /**
  * An optional injection token to override the default angular LOCALE_ID used by the language map pipe.
  */
-export declare const LANGUAGE_MAP_LOCALE_ID: InjectionToken<string>;
+export const LANGUAGE_MAP_LOCALE_ID = new InjectionToken<string>(
+  'LANGUAGE_MAP_LOCALE_ID'
+);
 
 /**
  * This pipe transforms the parameter (potentially a language map) into a string.
